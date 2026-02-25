@@ -352,7 +352,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Berikut daftar lengkap fitur di aplikasi ini:\n\n• Shizuku Integration: Root-level akses bebas root\n• Smart Auto-Detect Game\n• Smart Notification Block\n• Disable System Apps Temporarily\n• Auto-Clear Background RAM\n• Uncap FPS (Device Config Tweaks)\n• Thermal & Battery Status Monitoring\n• Custom Profile: Light / Balanced / Ultra\n• Hidden Apps: Whitelist pengecualian task kill"
+                    android:text="Berikut daftar lengkap fitur di aplikasi ini:\n\n• Shizuku Integration: Root-level akses bebas root\n• Smart Auto-Detect Game\n• Smart Notification Block\n• Disable System Apps Temporarily\n• Auto-Clear Background RAM\n• Uncap FPS (Device Config Tweaks)\n• Thermal &amp; Battery Status Monitoring\n• Custom Profile: Light / Balanced / Ultra\n• Hidden Apps: Whitelist pengecualian task kill"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp"
                     android:lineSpacingExtra="4dp"/>
