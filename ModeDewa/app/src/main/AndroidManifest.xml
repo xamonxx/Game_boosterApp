@@ -79,6 +79,13 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <!-- Hidden Apps Menu -->
+        <activity
+            android:name=".ui.HiddenAppsActivity"
+            android:exported="false"
+            android:label="Aplikasi Tersembunyi"
+            android:screenOrientation="portrait" />
+
         <!-- Auto-Detect Controller -->
         <activity
             android:name=".ui.AutoDetectActivity"

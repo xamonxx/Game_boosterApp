@@ -58,11 +58,14 @@ public class AppKiller {
     // ═══════════════════════════════════════
 
     /** Kill all heavy background apps */
-    public static int killHeavyApps() {
+    public static int killHeavyApps(android.content.Context context) {
         Log.d(TAG, "Killing heavy background apps...");
         int killed = 0;
+        com.modedewa.gamebooster.util.HiddenAppsManager hiddenManager = new com.modedewa.gamebooster.util.HiddenAppsManager(context);
         for (String app : HEAVY_APPS) {
             if (SimProtector.isProtected(app)) continue;
+            if (hiddenManager.isHidden(app)) continue; // Skip hidden apps
+            
             if (ShizukuShell.forceStop(app)) {
                 killed++;
             }
@@ -72,9 +75,10 @@ public class AppKiller {
     }
 
     /** Kill all non-essential running user processes */
-    public static int killAllBackground(String protectPackage) {
+    public static int killAllBackground(android.content.Context context, String protectPackage) {
         Log.d(TAG, "Scanning and killing all background processes...");
         int killed = 0;
+        com.modedewa.gamebooster.util.HiddenAppsManager hiddenManager = new com.modedewa.gamebooster.util.HiddenAppsManager(context);
 
         ShizukuShell.Result result = ShizukuShell.execute(
                 "pm list packages -3 2>/dev/null | cut -d: -f2");
@@ -87,6 +91,7 @@ public class AppKiller {
                 if (pkg.equals(protectPackage)) continue; // Don't kill the target game
                 if (pkg.equals("com.modedewa.gamebooster")) continue; // Don't kill ourselves
                 if (pkg.contains("shizuku")) continue; // Don't kill Shizuku
+                if (hiddenManager.isHidden(pkg)) continue; // Skip hidden apps
 
                 ShizukuShell.executeSilent("am force-stop " + pkg);
                 killed++;
@@ -111,11 +116,15 @@ public class AppKiller {
     }
 
     /** Disable non-essential apps to free resources */
-    public static int disableNonEssentialApps() {
+    public static int disableNonEssentialApps(android.content.Context context) {
         Log.d(TAG, "Disabling non-essential apps...");
         int disabled = 0;
+        com.modedewa.gamebooster.util.HiddenAppsManager hiddenManager = new com.modedewa.gamebooster.util.HiddenAppsManager(context);
+        
         for (String app : APPS_TO_DISABLE) {
             if (SimProtector.isProtected(app)) continue;
+            if (hiddenManager.isHidden(app)) continue; // Skip hidden apps
+            
             if (ShizukuShell.disablePackage(app)) {
                 disabled++;
             }

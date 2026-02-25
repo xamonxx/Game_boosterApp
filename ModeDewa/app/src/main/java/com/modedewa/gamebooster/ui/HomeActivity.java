@@ -147,7 +147,7 @@ public class HomeActivity extends AppCompatActivity {
         textProgressTitle.setText(R.string.progress_title);
         progressBar.setProgress(0);
 
-        GameModeExecutor executor = new GameModeExecutor(targetGamePackage);
+        GameModeExecutor executor = new GameModeExecutor(this, targetGamePackage);
         executor.setProgressListener(new GameModeExecutor.ProgressListener() {
             @Override
             public void onStepStarted(int stepIndex, OptimizationStep step) {
@@ -181,7 +181,7 @@ public class HomeActivity extends AppCompatActivity {
         textProgressTitle.setText(R.string.progress_restore_title);
         progressBar.setProgress(0);
 
-        GameModeExecutor executor = new GameModeExecutor(targetGamePackage);
+        GameModeExecutor executor = new GameModeExecutor(this, targetGamePackage);
         executor.setProgressListener(new GameModeExecutor.ProgressListener() {
             @Override
             public void onStepStarted(int stepIndex, OptimizationStep step) {

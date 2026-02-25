@@ -38,6 +38,12 @@ public class SplashActivity extends AppCompatActivity {
         // Continue anyway button
         findViewById(R.id.btnContinueAnyway).setOnClickListener(v -> goToHome());
 
+        // Animate progress bar
+        android.animation.ObjectAnimator animation = android.animation.ObjectAnimator.ofInt(progressBar, "progress", 0, 100);
+        animation.setDuration(1500);
+        animation.setInterpolator(new android.view.animation.DecelerateInterpolator());
+        animation.start();
+
         // Start checking after a short delay for visual effect
         new Handler().postDelayed(this::checkShizuku, 1500);
     }

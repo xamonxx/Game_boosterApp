@@ -25,6 +25,16 @@ public class SettingsActivity extends AppCompatActivity {
         setupBackButton();
         setupTempSlider();
         setupToggles();
+        setupHiddenApps();
+    }
+
+    private void setupHiddenApps() {
+        MaterialCardView cardHiddenApps = findViewById(R.id.cardHiddenApps);
+        if (cardHiddenApps != null) {
+            cardHiddenApps.setOnClickListener(v -> {
+                startActivity(new android.content.Intent(this, com.modedewa.gamebooster.ui.HiddenAppsActivity.class));
+            });
+        }
     }
 
     private void setupBackButton() {

@@ -1,96 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_dark"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="32dp">
+    android:background="@drawable/bg_splash_dark">
 
-    <!-- Logo / Icon -->
-    <TextView
-        android:id="@+id/splashLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="⚡"
-        android:textSize="80sp" />
-
-    <!-- App Name -->
-    <TextView
-        android:id="@+id/splashTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="sans-serif-black"
-        android:text="@string/app_name"
-        android:textColor="@color/neon_cyan"
-        android:textSize="36sp"
-        android:textStyle="bold" />
-
-    <!-- Subtitle -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/app_subtitle"
-        android:textColor="@color/text_tertiary"
-        android:textSize="14sp" />
-
-    <!-- Status Text -->
-    <TextView
-        android:id="@+id/splashStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="@string/splash_checking"
-        android:textColor="@color/text_secondary"
-        android:textSize="14sp" />
-
-    <!-- Progress Bar -->
-    <ProgressBar
-        android:id="@+id/splashProgress"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:indeterminate="true"
-        android:progressTint="@color/neon_cyan" />
-
-    <!-- Shizuku Warning (hidden by default) -->
-    <LinearLayout
-        android:id="@+id/shizukuWarning"
+    <!-- Glass Card -->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:background="@color/card_dark"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="24dp"
-        android:visibility="gone">
+        android:layout_height="match_parent"
+        android:layout_margin="24dp"
+        android:background="@drawable/bg_glass_neon">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- Logo Container -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="⚠️"
-            android:textSize="40sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="@string/splash_no_shizuku"
-            android:textColor="@color/status_warning"
-            android:textSize="14sp" />
+            android:orientation="vertical">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnContinueAnyway"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/g3_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-black"
+                android:shadowColor="@color/neon_cyan"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="30"
+                android:text="G3"
+                android:textColor="#FFFFFF"
+                android:textSize="120sp" />
+
+            <TextView
+                android:id="@+id/xamonxx_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-light"
+                android:letterSpacing="0.1"
+                android:shadowColor="@color/neon_cyan"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="20"
+                android:text="xamonxx"
+                android:textColor="#FFFFFF"
+                android:textSize="36sp" />
+        </LinearLayout>
+
+        <!-- Bottom Loading Container -->
+        <LinearLayout
+            android:id="@+id/loadingContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Lanjut Tanpa Shizuku"
-            android:textColor="@color/background_dark"
-            android:backgroundTint="@color/status_warning" />
-    </LinearLayout>
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="48dp"
+            android:gravity="center"
+            android:orientation="vertical">
 
-</LinearLayout>
+            <ProgressBar
+                android:id="@+id/splashProgress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="220dp"
+                android:layout_height="8dp"
+                android:indeterminate="false"
+                android:max="100"
+                android:progressDrawable="@drawable/custom_progress_splash" />
+
+            <TextView
+                android:id="@+id/splashStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif"
+                android:letterSpacing="0.05"
+                android:text="Loading resources..."
+                android:textColor="#B3FFFFFF"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+        
+        <!-- Shizuku Warning (hidden by default) -->
+        <LinearLayout
+            android:id="@+id/shizukuWarning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@color/card_dark"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⚠️"
+                android:textSize="48sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:text="@string/splash_no_shizuku"
+                android:textColor="@color/status_warning"
+                android:textSize="14sp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnContinueAnyway"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/status_warning"
+                android:text="Lanjut Tanpa Shizuku"
+                android:textColor="@color/background_dark" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>
