@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Riwayat Sesi Gaming - MODE DEWA</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#00E5FF",
+                    "primary-dim": "rgba(0,229,255,0.15)",
+                    "secondary": "#FF00E5",
+                    "secondary-dim": "rgba(255,0,229,0.15)",
+                    "accent-green": "#00FF88",
+                    "accent-orange": "#FF9800",
+                    "accent-red": "#FF3D00",
+                    "background-dark": "#060610",
+                    "surface-dark": "#0C0C1A",
+                    "card-dark": "#12122A",
+                    "glass-dark": "rgba(255,255,255,0.03)",
+                    "glass-border": "rgba(255,255,255,0.08)",
+                    "hud-ring": "rgba(0,229,255,0.12)",
+                },
+                fontFamily: {
+                    "display": ["Space Grotesk", "sans-serif"],
+                    "hud": ["Orbitron", "monospace"],
+                    "mono": ["Roboto Mono", "monospace"],
+                },
+            },
+        },
+    }
+</script>
+<style>
+    body { min-height: max(900px, 100dvh); }
+
+    @keyframes glow-pulse { 0%, 100% { box-shadow: 0 0 8px rgba(0,229,255,0.3), inset 0 0 8px rgba(0,229,255,0.1); } 50% { box-shadow: 0 0 20px rgba(0,229,255,0.6), inset 0 0 15px rgba(0,229,255,0.2); } }
+    @keyframes status-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    @keyframes float-up { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+    @keyframes hud-border-trace { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
+    @keyframes data-stream { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
+    @keyframes counter-up { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
+    @keyframes slide-in { 0% { transform: translateX(-20px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+
+    .glow-pulse { animation: glow-pulse 2s ease-in-out infinite; }
+    .status-blink { animation: status-blink 1.5s ease-in-out infinite; }
+    .float-up { animation: float-up 0.6s ease-out forwards; opacity: 0; }
+    .counter-up { animation: counter-up 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    .slide-in { animation: slide-in 0.5s ease-out forwards; opacity: 0; }
+
+    .hud-panel {
+        background: linear-gradient(135deg, rgba(0,229,255,0.05), rgba(255,0,229,0.03), rgba(0,229,255,0.02));
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(0,229,255,0.15);
+        position: relative;
+    }
+    .hud-panel::before {
+        content: '';
+        position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        background: linear-gradient(90deg, transparent, #00E5FF, transparent);
+        background-size: 200% 100%;
+        animation: hud-border-trace 3s linear infinite;
+    }
+
+    .bg-hud-grid {
+        background-image: linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+        background-size: 20px 20px;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #060610; }
+    ::-webkit-scrollbar-thumb { background: #00E5FF33; border-radius: 2px; }
+
+    .session-item { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .session-item:hover { background: rgba(0,229,255,0.06); transform: translateX(4px); }
+
+    .stat-bar-fill { transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
+    .stat-bar-fill::after {
+        content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: data-stream 2s linear infinite;
+    }
+    .session-digit { font-variant-numeric: tabular-nums; text-shadow: 0 0 10px rgba(0,229,255,0.5); }
+
+    .temp-bar-cool { background: linear-gradient(90deg, #00FF88, #00E5FF); }
+    .temp-bar-warm { background: linear-gradient(90deg, #FF9800, #FFAB00); }
+    .temp-bar-hot { background: linear-gradient(90deg, #FF3D00, #FF0040); }
+
+    .profile-badge-ultra { background: rgba(255,61,0,0.15); color: #FF3D00; border-color: rgba(255,61,0,0.3); }
+    .profile-badge-balanced { background: rgba(255,152,0,0.15); color: #FF9800; border-color: rgba(255,152,0,0.3); }
+    .profile-badge-light { background: rgba(0,255,136,0.15); color: #00FF88; border-color: rgba(0,255,136,0.3); }
+</style>
+</head>
+
+<body class="bg-background-dark font-display text-slate-100 min-h-screen flex flex-col overflow-x-hidden selection:bg-primary selection:text-black">
+
+<!-- AMBIENT BACKGROUND -->
+<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+    <div class="absolute top-[-15%] left-[-10%] w-[60%] h-[60%] bg-primary/5 blur-[150px] rounded-full"></div>
+    <div class="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] bg-secondary/5 blur-[120px] rounded-full"></div>
+    <div class="absolute top-[30%] left-[50%] w-[30%] h-[30%] bg-accent-green/3 blur-[100px] rounded-full"></div>
+    <div class="absolute inset-0 bg-hud-grid opacity-30"></div>
+    <div class="absolute inset-0 opacity-[0.02]" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.1) 2px, transparent 4px);"></div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="relative z-10 flex-1 flex flex-col max-w-md mx-auto w-full bg-transparent min-h-screen pb-28">
+
+    <!-- HEADER HUD -->
+    <header class="sticky top-0 z-50 bg-background-dark/85 backdrop-blur-xl border-b border-primary/10 px-5 py-3">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <button class="text-slate-400 hover:text-primary transition-colors" onclick="history.back()">
+                    <span class="material-symbols-outlined text-xl">arrow_back</span>
+                </button>
+                <div>
+                    <h1 class="font-hud text-sm font-bold tracking-widest text-primary flex items-center gap-2">
+                        RIWAYAT SESI
+                    </h1>
+                    <p class="text-[10px] text-slate-500 font-mono tracking-wider mt-0.5">GAME SESSION HISTORY</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="btnClear" class="text-[10px] font-mono text-accent-red/80 border border-accent-red/20 px-2 py-1 rounded hover:bg-accent-red/10 transition-colors">
+                    HAPUS SEMUA
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 px-4 py-5 flex flex-col gap-5">
+
+        <!-- SECTION 1: SUMMARY STATS OVERVIEW -->
+        <section class="hud-panel rounded-2xl p-5 float-up" style="animation-delay: 0.1s">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-primary text-lg">analytics</span>
+                <span class="font-hud text-[11px] text-primary tracking-widest">RINGKASAN STATISTIK</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3">
+                <!-- Total Sesi -->
+                <div class="text-center">
+                    <p class="font-mono text-2xl font-bold text-primary session-digit counter-up" style="animation-delay: 0.3s">24</p>
+                    <p class="text-[9px] text-slate-500 font-mono tracking-wider mt-0.5">TOTAL SESI</p>
+                </div>
+                <!-- Total Waktu -->
+                <div class="text-center border-x border-white/5">
+                    <p class="font-mono text-2xl font-bold text-accent-green session-digit counter-up" style="animation-delay: 0.5s">48j</p>
+                    <p class="text-[9px] text-slate-500 font-mono tracking-wider mt-0.5">TOTAL WAKTU</p>
+                </div>
+                <!-- Suhu Tertinggi -->
+                <div class="text-center">
+                    <p class="font-mono text-2xl font-bold text-accent-orange session-digit counter-up" style="animation-delay: 0.7s">52°</p>
+                    <p class="text-[9px] text-slate-500 font-mono tracking-wider mt-0.5">SUHU MAKS</p>
+                </div>
+            </div>
+
+            <!-- Mini chart: sessions per day (last 7 days) -->
+            <div class="mt-5">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[9px] text-slate-500 font-mono tracking-wider">SESI 7 HARI TERAKHIR</span>
+                    <span class="text-[9px] text-primary/60 font-mono">Rata-rata: 3.4/hari</span>
+                </div>
+                <div class="flex items-end gap-1 h-12">
+                    <div class="flex-1 bg-primary/20 rounded-t" style="height: 40%"><div class="w-full h-full bg-primary/60 rounded-t stat-bar-fill" style="animation-delay: 0.2s"></div></div>
+                    <div class="flex-1 bg-primary/20 rounded-t" style="height: 80%"><div class="w-full h-full bg-primary/60 rounded-t stat-bar-fill" style="animation-delay: 0.3s"></div></div>
+                    <div class="flex-1 bg-primary/20 rounded-t" style="height: 60%"><div class="w-full h-full bg-primary/60 rounded-t stat-bar-fill" style="animation-delay: 0.4s"></div></div>
+                    <div class="flex-1 bg-primary/20 rounded-t" style="height: 30%"><div class="w-full h-full bg-primary/60 rounded-t stat-bar-fill" style="animation-delay: 0.5s"></div></div>
+                    <div class="flex-1 bg-primary/20 rounded-t" style="height: 100%"><div class="w-full h-full bg-accent-green/60 rounded-t stat-bar-fill" style="animation-delay: 0.6s"></div></div>
+                    <div class="flex-1 bg-primary/20 rounded-t" style="height: 50%"><div class="w-full h-full bg-primary/60 rounded-t stat-bar-fill" style="animation-delay: 0.7s"></div></div>
+                    <div class="flex-1 bg-primary/20 rounded-t" style="height: 70%"><div class="w-full h-full bg-secondary/60 rounded-t stat-bar-fill" style="animation-delay: 0.8s"></div></div>
+                </div>
+                <div class="flex gap-1 mt-1">
+                    <span class="flex-1 text-center text-[7px] text-slate-600 font-mono">Sen</span>
+                    <span class="flex-1 text-center text-[7px] text-slate-600 font-mono">Sel</span>
+                    <span class="flex-1 text-center text-[7px] text-slate-600 font-mono">Rab</span>
+                    <span class="flex-1 text-center text-[7px] text-slate-600 font-mono">Kam</span>
+                    <span class="flex-1 text-center text-[7px] text-accent-green text-slate-600 font-mono">Jum</span>
+                    <span class="flex-1 text-center text-[7px] text-slate-600 font-mono">Sab</span>
+                    <span class="flex-1 text-center text-[7px] text-secondary/80 font-mono">Min</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: GAME BREAKDOWN -->
+        <section class="hud-panel rounded-2xl p-5 float-up" style="animation-delay: 0.2s">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-primary text-lg">sports_esports</span>
+                <span class="font-hud text-[11px] text-primary tracking-widest">GAME PALING SERING</span>
+            </div>
+
+            <div class="space-y-3">
+                <!-- Game 1 -->
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500/30 to-blue-900/30 border border-blue-500/20 flex items-center justify-center">
+                        <span class="text-sm">🎮</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium truncate">Mobile Legends</span>
+                            <span class="text-[10px] font-mono text-primary">12 sesi</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/5 rounded-full mt-1 overflow-hidden">
+                            <div class="h-full rounded-full bg-gradient-to-r from-primary to-accent-green stat-bar-fill" style="width: 80%"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Game 2 -->
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500/30 to-green-900/30 border border-green-500/20 flex items-center justify-center">
+                        <span class="text-sm">🎯</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium truncate">Free Fire</span>
+                            <span class="text-[10px] font-mono text-primary">8 sesi</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/5 rounded-full mt-1 overflow-hidden">
+                            <div class="h-full rounded-full bg-gradient-to-r from-accent-green to-accent-orange stat-bar-fill" style="width: 55%"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Game 3 -->
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500/30 to-orange-900/30 border border-orange-500/20 flex items-center justify-center">
+                        <span class="text-sm">⚔️</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium truncate">Genshin Impact</span>
+                            <span class="text-[10px] font-mono text-primary">4 sesi</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/5 rounded-full mt-1 overflow-hidden">
+                            <div class="h-full rounded-full bg-gradient-to-r from-accent-orange to-accent-red stat-bar-fill" style="width: 28%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: SESSION LIST -->
+        <section class="hud-panel rounded-2xl p-5 float-up" style="animation-delay: 0.3s">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-lg">history</span>
+                    <span class="font-hud text-[11px] text-primary tracking-widest">DAFTAR SESI</span>
+                </div>
+                <span class="text-[10px] font-mono text-slate-500">24 sesi tercatat</span>
+            </div>
+
+            <div class="space-y-2" id="sessionList">
+
+                <!-- Session Item 1: Hari ini -->
+                <div class="text-[9px] font-mono text-slate-500 tracking-wider mt-2 mb-1 px-1">HARI INI</div>
+
+                <div class="session-item rounded-xl bg-white/[0.02] border border-white/5 p-3 slide-in" style="animation-delay: 0.4s">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500/30 to-blue-900/30 border border-blue-500/20 flex items-center justify-center">
+                                <span class="text-xs">🎮</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium">Mobile Legends</p>
+                                <p class="text-[9px] font-mono text-slate-500">14:30 — 16:12</p>
+                            </div>
+                        </div>
+                        <span class="text-[9px] border rounded px-1.5 py-0.5 font-mono profile-badge-ultra">ULTRA</span>
+                    </div>
+                    <!-- Stats row -->
+                    <div class="grid grid-cols-4 gap-2 mt-2">
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">DURASI</p>
+                            <p class="text-[11px] font-mono font-bold text-primary session-digit">1j 42m</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">SUHU</p>
+                            <p class="text-[11px] font-mono font-bold text-accent-orange session-digit">48.2°</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">FPS</p>
+                            <p class="text-[11px] font-mono font-bold text-accent-green session-digit">52</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">BATERAI</p>
+                            <p class="text-[11px] font-mono font-bold text-accent-red session-digit">-34%</p>
+                        </div>
+                    </div>
+                    <!-- Temp bar -->
+                    <div class="w-full h-1 bg-white/5 rounded-full mt-2 overflow-hidden">
+                        <div class="h-full rounded-full temp-bar-warm stat-bar-fill" style="width: 68%"></div>
+                    </div>
+                    <!-- Extra info -->
+                    <div class="flex items-center gap-3 mt-2">
+                        <span class="text-[8px] font-mono text-slate-500">RAM: 1.2GB</span>
+                        <span class="text-[8px] font-mono text-slate-500">|</span>
+                        <span class="text-[8px] font-mono text-accent-green/70">5 app dimatikan</span>
+                    </div>
+                </div>
+
+                <div class="session-item rounded-xl bg-white/[0.02] border border-white/5 p-3 slide-in" style="animation-delay: 0.5s">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-green-500/30 to-green-900/30 border border-green-500/20 flex items-center justify-center">
+                                <span class="text-xs">🎯</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium">Free Fire</p>
+                                <p class="text-[9px] font-mono text-slate-500">10:15 — 11:40</p>
+                            </div>
+                        </div>
+                        <span class="text-[9px] border rounded px-1.5 py-0.5 font-mono profile-badge-balanced">BALANCED</span>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2 mt-2">
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">DURASI</p>
+                            <p class="text-[11px] font-mono font-bold text-primary session-digit">1j 25m</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">SUHU</p>
+                            <p class="text-[11px] font-mono font-bold text-accent-green session-digit">41.5°</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">FPS</p>
+                            <p class="text-[11px] font-mono font-bold text-accent-green session-digit">48</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">BATERAI</p>
+                            <p class="text-[11px] font-mono font-bold text-accent-orange session-digit">-28%</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-1 bg-white/5 rounded-full mt-2 overflow-hidden">
+                        <div class="h-full rounded-full temp-bar-cool stat-bar-fill" style="width: 45%"></div>
+                    </div>
+                    <div class="flex items-center gap-3 mt-2">
+                        <span class="text-[8px] font-mono text-slate-500">RAM: 980MB</span>
+                        <span class="text-[8px] font-mono text-slate-500">|</span>
+                        <span class="text-[8px] font-mono text-accent-green/70">3 app dimatikan</span>
+                    </div>
+                </div>
+
+                <!-- Session Item 3: Kemarin -->
+                <div class="text-[9px] font-mono text-slate-500 tracking-wider mt-4 mb-1 px-1">KEMARIN</div>
+
+                <div class="session-item rounded-xl bg-white/[0.02] border border-white/5 p-3 slide-in" style="animation-delay: 0.6s">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-orange-500/30 to-orange-900/30 border border-orange-500/20 flex items-center justify-center">
+                                <span class="text-xs">⚔️</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium">Genshin Impact</p>
+                                <p class="text-[9px] font-mono text-slate-500">20:00 — 22:35</p>
+                            </div>
+                        </div>
+                        <span class="text-[9px] border rounded px-1.5 py-0.5 font-mono profile-badge-ultra">ULTRA</span>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2 mt-2">
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">DURASI</p>
+                            <p class="text-[11px] font-mono font-bold text-primary session-digit">2j 35m</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">SUHU</p>
+                            <p class="text-[11px] font-mono font-bold text-accent-red session-digit">52.1°</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">FPS</p>
+                            <p class="text-[11px] font-mono font-bold text-accent-orange session-digit">28</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">BATERAI</p>
+                            <p class="text-[11px] font-mono font-bold text-accent-red session-digit">-55%</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-1 bg-white/5 rounded-full mt-2 overflow-hidden">
+                        <div class="h-full rounded-full temp-bar-hot stat-bar-fill" style="width: 90%"></div>
+                    </div>
+                    <div class="flex items-center gap-3 mt-2">
+                        <span class="text-[8px] font-mono text-slate-500">RAM: 1.8GB</span>
+                        <span class="text-[8px] font-mono text-slate-500">|</span>
+                        <span class="text-[8px] font-mono text-accent-green/70">7 app dimatikan</span>
+                        <span class="text-[8px] font-mono text-slate-500">|</span>
+                        <span class="text-[8px] font-mono text-accent-red/70">⚠ Peringatan suhu</span>
+                    </div>
+                </div>
+
+                <div class="session-item rounded-xl bg-white/[0.02] border border-white/5 p-3 slide-in" style="animation-delay: 0.7s">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500/30 to-blue-900/30 border border-blue-500/20 flex items-center justify-center">
+                                <span class="text-xs">🎮</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium">Mobile Legends</p>
+                                <p class="text-[9px] font-mono text-slate-500">13:00 — 14:20</p>
+                            </div>
+                        </div>
+                        <span class="text-[9px] border rounded px-1.5 py-0.5 font-mono profile-badge-light">LIGHT</span>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2 mt-2">
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">DURASI</p>
+                            <p class="text-[11px] font-mono font-bold text-primary session-digit">1j 20m</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">SUHU</p>
+                            <p class="text-[11px] font-mono font-bold text-accent-green session-digit">38.4°</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">FPS</p>
+                            <p class="text-[11px] font-mono font-bold text-accent-green session-digit">55</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">BATERAI</p>
+                            <p class="text-[11px] font-mono font-bold text-accent-orange session-digit">-18%</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-1 bg-white/5 rounded-full mt-2 overflow-hidden">
+                        <div class="h-full rounded-full temp-bar-cool stat-bar-fill" style="width: 32%"></div>
+                    </div>
+                    <div class="flex items-center gap-3 mt-2">
+                        <span class="text-[8px] font-mono text-slate-500">RAM: 850MB</span>
+                        <span class="text-[8px] font-mono text-slate-500">|</span>
+                        <span class="text-[8px] font-mono text-accent-green/70">2 app dimatikan</span>
+                    </div>
+                </div>
+
+                <!-- Older sessions -->
+                <div class="text-[9px] font-mono text-slate-500 tracking-wider mt-4 mb-1 px-1">23 FEB 2026</div>
+
+                <div class="session-item rounded-xl bg-white/[0.02] border border-white/5 p-3 slide-in" style="animation-delay: 0.8s">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500/30 to-purple-900/30 border border-purple-500/20 flex items-center justify-center">
+                                <span class="text-xs">🏎️</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium">Asphalt 9</p>
+                                <p class="text-[9px] font-mono text-slate-500">19:45 — 21:00</p>
+                            </div>
+                        </div>
+                        <span class="text-[9px] border rounded px-1.5 py-0.5 font-mono profile-badge-balanced">BALANCED</span>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2 mt-2">
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">DURASI</p>
+                            <p class="text-[11px] font-mono font-bold text-primary session-digit">1j 15m</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">SUHU</p>
+                            <p class="text-[11px] font-mono font-bold text-accent-orange session-digit">44.7°</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">FPS</p>
+                            <p class="text-[11px] font-mono font-bold text-accent-green session-digit">45</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] text-slate-500 font-mono">BATERAI</p>
+                            <p class="text-[11px] font-mono font-bold text-accent-orange session-digit">-25%</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-1 bg-white/5 rounded-full mt-2 overflow-hidden">
+                        <div class="h-full rounded-full temp-bar-warm stat-bar-fill" style="width: 55%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EMPTY STATE (hidden by default) -->
+        <section class="hud-panel rounded-2xl p-8 float-up hidden" id="emptyState">
+            <div class="text-center">
+                <span class="material-symbols-outlined text-5xl text-slate-600 mb-3">history_toggle_off</span>
+                <p class="text-sm text-slate-400 mb-1">Belum ada riwayat sesi gaming</p>
+                <p class="text-[11px] text-slate-600">Mulai bermain untuk merekam statistik.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-background-dark/90 backdrop-blur-xl border-t border-primary/10">
+        <div class="max-w-md mx-auto flex items-center justify-around py-2">
+            <button class="flex flex-col items-center gap-0.5 px-4 py-1 text-slate-500 hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-xl">home</span>
+                <span class="text-[9px] font-mono">Home</span>
+            </button>
+            <button class="flex flex-col items-center gap-0.5 px-4 py-1 text-slate-500 hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-xl">sports_esports</span>
+                <span class="text-[9px] font-mono">Profil</span>
+            </button>
+            <button class="flex flex-col items-center gap-0.5 px-4 py-1 text-primary">
+                <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1">history</span>
+                <span class="text-[9px] font-mono font-bold">Riwayat</span>
+            </button>
+            <button class="flex flex-col items-center gap-0.5 px-4 py-1 text-slate-500 hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-xl">settings</span>
+                <span class="text-[9px] font-mono">Pengaturan</span>
+            </button>
+        </div>
+    </nav>
+
+</div>
+
+<!-- DELETE CONFIRMATION DIALOG -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm hidden" id="deleteDialog">
+    <div class="hud-panel rounded-2xl p-6 mx-6 max-w-sm w-full">
+        <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-accent-red">delete_forever</span>
+            <span class="font-hud text-[11px] text-accent-red tracking-widest">KONFIRMASI HAPUS</span>
+        </div>
+        <p class="text-sm text-slate-300 mb-5">Hapus semua riwayat sesi gaming? Aksi ini tidak dapat dibatalkan.</p>
+        <div class="flex gap-3">
+            <button class="flex-1 px-4 py-2 rounded-lg border border-white/10 text-sm text-slate-400 hover:bg-white/5 transition-colors" onclick="document.getElementById('deleteDialog').classList.add('hidden')">Batal</button>
+            <button class="flex-1 px-4 py-2 rounded-lg bg-accent-red/20 border border-accent-red/30 text-sm text-accent-red hover:bg-accent-red/30 transition-colors" onclick="clearAll()">Hapus Semua</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Show delete dialog
+    document.getElementById('btnClear').addEventListener('click', () => {
+        document.getElementById('deleteDialog').classList.remove('hidden');
+    });
+
+    // Clear all sessions
+    function clearAll() {
+        document.getElementById('deleteDialog').classList.add('hidden');
+        document.getElementById('sessionList').innerHTML = '';
+        document.getElementById('emptyState').classList.remove('hidden');
+    }
+</script>
+
+</body>
+</html>

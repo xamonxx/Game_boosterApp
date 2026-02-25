@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Auto-Detect Controller HUD - MODE DEWA</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Roboto+Mono:wght@400;500;700&amp;family=Orbitron:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#00E5FF",
+                    "primary-dim": "rgba(0,229,255,0.15)",
+                    "secondary": "#FF00E5",
+                    "secondary-dim": "rgba(255,0,229,0.15)",
+                    "accent-green": "#00FF88",
+                    "accent-orange": "#FF9800",
+                    "accent-red": "#FF3D00",
+                    "background-dark": "#060610",
+                    "surface-dark": "#0C0C1A",
+                    "card-dark": "#12122A",
+                    "glass-dark": "rgba(255,255,255,0.03)",
+                    "glass-border": "rgba(255,255,255,0.08)",
+                    "hud-ring": "rgba(0,229,255,0.12)",
+                },
+                fontFamily: {
+                    "display": ["Space Grotesk", "sans-serif"],
+                    "hud": ["Orbitron", "monospace"],
+                    "mono": ["Roboto Mono", "monospace"],
+                },
+            },
+        },
+    }
+</script>
+<style>
+    body { min-height: max(900px, 100dvh); }
+
+    /* === HUD RADAR ANIMATION === */
+    @keyframes radar-sweep { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes radar-ping { 0% { transform: scale(0.8); opacity: 0.6; } 50% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(0.8); opacity: 0.6; } }
+    @keyframes scan-line { 0% { top: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+    @keyframes glow-pulse { 0%, 100% { box-shadow: 0 0 8px rgba(0,229,255,0.3), inset 0 0 8px rgba(0,229,255,0.1); } 50% { box-shadow: 0 0 20px rgba(0,229,255,0.6), inset 0 0 15px rgba(0,229,255,0.2); } }
+    @keyframes status-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    @keyframes float-up { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+    @keyframes hud-border-trace { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
+    @keyframes data-stream { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
+
+    .radar-sweep { animation: radar-sweep 3s linear infinite; }
+    .radar-ping { animation: radar-ping 2s ease-in-out infinite; }
+    .glow-pulse { animation: glow-pulse 2s ease-in-out infinite; }
+    .status-blink { animation: status-blink 1.5s ease-in-out infinite; }
+    .float-up { animation: float-up 0.6s ease-out forwards; }
+
+    .hud-panel {
+        background: linear-gradient(135deg, rgba(0,229,255,0.05), rgba(255,0,229,0.03), rgba(0,229,255,0.02));
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(0,229,255,0.15);
+        position: relative;
+    }
+    .hud-panel::before {
+        content: '';
+        position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        background: linear-gradient(90deg, transparent, #00E5FF, transparent);
+        background-size: 200% 100%;
+        animation: hud-border-trace 3s linear infinite;
+    }
+
+    .neon-switch input:checked + .switch-track {
+        background: rgba(0,229,255,0.2) !important;
+        border-color: #00E5FF !important;
+        box-shadow: 0 0 15px rgba(0,229,255,0.4), inset 0 0 8px rgba(0,229,255,0.15) !important;
+    }
+    .neon-switch input:checked + .switch-track .switch-thumb {
+        transform: translateX(100%) !important;
+        background: #00E5FF !important;
+        box-shadow: 0 0 12px rgba(0,229,255,0.8) !important;
+    }
+
+    .bg-hud-grid {
+        background-image: linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+        background-size: 20px 20px;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #060610; }
+    ::-webkit-scrollbar-thumb { background: #00E5FF33; border-radius: 2px; }
+
+    .app-item { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .app-item:hover { background: rgba(0,229,255,0.06); transform: translateX(4px); }
+    .app-item.disabled { opacity: 0.4; filter: grayscale(0.6); }
+
+    .stat-bar-fill { transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
+    .stat-bar-fill::after {
+        content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: data-stream 2s linear infinite;
+    }
+    .session-digit { font-variant-numeric: tabular-nums; text-shadow: 0 0 10px rgba(0,229,255,0.5); }
+
+    input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+    input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%;
+        background: #00E5FF; cursor: pointer; margin-top: -7px;
+        box-shadow: 0 0 10px rgba(0,229,255,0.8), 0 0 20px rgba(0,229,255,0.4); border: 2px solid #fff;
+    }
+    input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(255,255,255,0.1); border-radius: 2px; }
+</style>
+</head>
+
+<body class="bg-background-dark font-display text-slate-100 min-h-screen flex flex-col overflow-x-hidden selection:bg-primary selection:text-black">
+
+<!-- AMBIENT BACKGROUND -->
+<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+    <div class="absolute top-[-15%] left-[-10%] w-[60%] h-[60%] bg-primary/5 blur-[150px] rounded-full"></div>
+    <div class="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] bg-secondary/5 blur-[120px] rounded-full"></div>
+    <div class="absolute top-[30%] left-[50%] w-[30%] h-[30%] bg-accent-green/3 blur-[100px] rounded-full"></div>
+    <div class="absolute inset-0 bg-hud-grid opacity-30"></div>
+    <div class="absolute inset-0 opacity-[0.02]" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.1) 2px, transparent 4px);"></div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="relative z-10 flex-1 flex flex-col max-w-md mx-auto w-full bg-transparent min-h-screen pb-28">
+
+    <!-- HEADER HUD -->
+    <header class="sticky top-0 z-50 bg-background-dark/85 backdrop-blur-xl border-b border-primary/10 px-5 py-3">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <button class="text-slate-400 hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-xl">arrow_back</span>
+                </button>
+                <div>
+                    <h1 class="font-hud text-sm font-bold tracking-widest text-primary flex items-center gap-2">
+                        AUTO-DETECT
+                        <span class="text-[9px] bg-accent-green/20 text-accent-green border border-accent-green/30 px-1.5 py-0.5 rounded font-mono status-blink">AKTIF</span>
+                    </h1>
+                    <p class="text-[10px] text-slate-500 font-mono tracking-wider mt-0.5">GAME DETECTION CONTROLLER v2.0</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-accent-green shadow-[0_0_8px_rgba(0,255,136,0.6)] status-blink"></div>
+                <span class="text-[10px] font-mono text-accent-green">ONLINE</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 px-4 py-5 flex flex-col gap-5">
+
+        <!-- SECTION 1: RADAR HUD — MASTER TOGGLE -->
+        <section class="hud-panel rounded-2xl p-5 float-up" style="animation-delay: 0.1s">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-lg">radar</span>
+                    <span class="font-hud text-[11px] text-primary tracking-widest">DETECTION ENGINE</span>
+                </div>
+                <label class="neon-switch relative cursor-pointer">
+                    <input type="checkbox" checked class="sr-only peer"/>
+                    <div class="switch-track w-12 h-6 rounded-full border border-slate-600 bg-slate-800 transition-all duration-300 flex items-center px-0.5">
+                        <div class="switch-thumb w-5 h-5 rounded-full bg-slate-500 transition-all duration-300 shadow-md"></div>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Radar Visual -->
+            <div class="relative w-48 h-48 mx-auto my-4">
+                <div class="absolute inset-0 rounded-full border border-primary/10"></div>
+                <div class="absolute inset-4 rounded-full border border-primary/8"></div>
+                <div class="absolute inset-8 rounded-full border border-primary/6"></div>
+                <div class="absolute inset-12 rounded-full border border-dashed border-primary/15"></div>
+                <div class="absolute top-0 bottom-0 left-1/2 w-px bg-primary/10"></div>
+                <div class="absolute left-0 right-0 top-1/2 h-px bg-primary/10"></div>
+                <div class="absolute inset-0 radar-sweep" style="transform-origin: center;">
+                    <div class="absolute top-1/2 left-1/2 w-1/2 h-0.5 origin-left" style="background: linear-gradient(90deg, #00E5FF, transparent);"></div>
+                    <div class="absolute top-1/2 left-1/2 w-1/2 h-12 origin-left -translate-y-1/2" style="background: conic-gradient(from 0deg, rgba(0,229,255,0.15), transparent 60deg);"></div>
+                </div>
+                <div class="absolute top-[25%] left-[60%] w-2.5 h-2.5 rounded-full bg-accent-green shadow-[0_0_8px_rgba(0,255,136,0.8)] radar-ping" style="animation-delay: 0s;"></div>
+                <div class="absolute top-[55%] left-[30%] w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_8px_rgba(0,229,255,0.8)] radar-ping" style="animation-delay: 0.8s;"></div>
+                <div class="absolute top-[70%] left-[65%] w-2 h-2 rounded-full bg-accent-orange shadow-[0_0_6px_rgba(255,152,0,0.8)] radar-ping" style="animation-delay: 1.5s;"></div>
+                <div class="absolute top-[35%] left-[75%] w-1.5 h-1.5 rounded-full bg-slate-500 radar-ping" style="animation-delay: 2s;"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-primary shadow-[0_0_15px_rgba(0,229,255,0.8)] glow-pulse"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-4 text-center">
+                    <p class="font-hud text-[10px] text-primary/60 tracking-widest">SCANNING</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3 mt-4">
+                <div class="text-center">
+                    <p class="font-mono text-xl font-bold text-primary session-digit">3</p>
+                    <p class="text-[9px] text-slate-500 font-mono tracking-wider mt-0.5">TERDETEKSI</p>
+                </div>
+                <div class="text-center border-x border-white/5">
+                    <p class="font-mono text-xl font-bold text-accent-green session-digit">2</p>
+                    <p class="text-[9px] text-slate-500 font-mono tracking-wider mt-0.5">AKTIF</p>
+                </div>
+                <div class="text-center">
+                    <p class="font-mono text-xl font-bold text-slate-500 session-digit">1</p>
+                    <p class="text-[9px] text-slate-500 font-mono tracking-wider mt-0.5">NONAKTIF</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: DETECTED APPS LIST -->
+        <section class="hud-panel rounded-2xl overflow-hidden float-up" style="animation-delay: 0.2s">
+            <div class="px-5 pt-4 pb-3 flex items-center justify-between border-b border-white/5">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-lg">sports_esports</span>
+                    <span class="font-hud text-[11px] text-primary tracking-widest">APLIKASI TERDETEKSI</span>
+                </div>
+                <button class="text-[10px] font-mono text-slate-400 hover:text-primary transition-colors flex items-center gap-1 px-2 py-1 rounded border border-white/5 hover:border-primary/30">
+                    <span class="material-symbols-outlined text-xs">add</span> TAMBAH
+                </button>
+            </div>
+            <div class="divide-y divide-white/5">
+                <!-- MLBB Active -->
+                <div class="app-item px-5 py-3.5 flex items-center justify-between group">
+                    <div class="flex items-center gap-3">
+                        <div class="relative">
+                            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600/30 to-purple-600/30 border border-white/10 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-blue-400">sports_esports</span>
+                            </div>
+                            <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-accent-green border-2 border-background-dark shadow-[0_0_6px_rgba(0,255,136,0.6)]"></div>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-semibold text-white group-hover:text-primary transition-colors">Mobile Legends</h4>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-[9px] font-mono text-accent-green bg-accent-green/10 px-1.5 py-0.5 rounded">AUTO</span>
+                                <span class="text-[10px] font-mono text-slate-500">Profil: ULTRA</span>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="neon-switch relative cursor-pointer">
+                        <input type="checkbox" checked class="sr-only peer"/>
+                        <div class="switch-track w-10 h-5 rounded-full border border-slate-600 bg-slate-800 transition-all duration-300 flex items-center px-0.5">
+                            <div class="switch-thumb w-4 h-4 rounded-full bg-slate-500 transition-all duration-300 shadow-md"></div>
+                        </div>
+                    </label>
+                </div>
+                <!-- PUBG Active -->
+                <div class="app-item px-5 py-3.5 flex items-center justify-between group">
+                    <div class="flex items-center gap-3">
+                        <div class="relative">
+                            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-yellow-600/30 to-orange-600/30 border border-white/10 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-yellow-400">target</span>
+                            </div>
+                            <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-accent-green border-2 border-background-dark shadow-[0_0_6px_rgba(0,255,136,0.6)]"></div>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-semibold text-white group-hover:text-primary transition-colors">PUBG Mobile</h4>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-[9px] font-mono text-accent-green bg-accent-green/10 px-1.5 py-0.5 rounded">AUTO</span>
+                                <span class="text-[10px] font-mono text-slate-500">Profil: BALANCED</span>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="neon-switch relative cursor-pointer">
+                        <input type="checkbox" checked class="sr-only peer"/>
+                        <div class="switch-track w-10 h-5 rounded-full border border-slate-600 bg-slate-800 transition-all duration-300 flex items-center px-0.5">
+                            <div class="switch-thumb w-4 h-4 rounded-full bg-slate-500 transition-all duration-300 shadow-md"></div>
+                        </div>
+                    </label>
+                </div>
+                <!-- Genshin Disabled -->
+                <div class="app-item disabled px-5 py-3.5 flex items-center justify-between group">
+                    <div class="flex items-center gap-3">
+                        <div class="relative">
+                            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-teal-600/30 to-cyan-600/30 border border-white/10 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-teal-400">landscape</span>
+                            </div>
+                            <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-slate-600 border-2 border-background-dark"></div>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-semibold text-slate-400">Genshin Impact</h4>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-[9px] font-mono text-slate-500 bg-slate-700/50 px-1.5 py-0.5 rounded">MATI</span>
+                                <span class="text-[10px] font-mono text-slate-600">Dinonaktifkan</span>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="neon-switch relative cursor-pointer">
+                        <input type="checkbox" class="sr-only peer"/>
+                        <div class="switch-track w-10 h-5 rounded-full border border-slate-700 bg-slate-800 transition-all duration-300 flex items-center px-0.5">
+                            <div class="switch-thumb w-4 h-4 rounded-full bg-slate-600 transition-all duration-300"></div>
+                        </div>
+                    </label>
+                </div>
+                <!-- Custom App (User Added) -->
+                <div class="app-item px-5 py-3.5 flex items-center justify-between group">
+                    <div class="flex items-center gap-3">
+                        <div class="relative">
+                            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-pink-600/30 to-red-600/30 border border-dashed border-white/15 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-pink-400">extension</span>
+                            </div>
+                            <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-primary border-2 border-background-dark shadow-[0_0_6px_rgba(0,229,255,0.6)]"></div>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-semibold text-white group-hover:text-primary transition-colors">RetroArch</h4>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-[9px] font-mono text-primary bg-primary/10 px-1.5 py-0.5 rounded">MANUAL</span>
+                                <span class="text-[10px] font-mono text-slate-500">Profil: LIGHT</span>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="neon-switch relative cursor-pointer">
+                        <input type="checkbox" checked class="sr-only peer"/>
+                        <div class="switch-track w-10 h-5 rounded-full border border-slate-600 bg-slate-800 transition-all duration-300 flex items-center px-0.5">
+                            <div class="switch-thumb w-4 h-4 rounded-full bg-slate-500 transition-all duration-300 shadow-md"></div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: SMART PROFILE SWITCHING -->
+        <section class="hud-panel rounded-2xl p-5 float-up" style="animation-delay: 0.3s">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-secondary text-lg">auto_awesome</span>
+                    <span class="font-hud text-[11px] text-secondary tracking-widest">SMART PROFIL</span>
+                </div>
+                <label class="neon-switch relative cursor-pointer">
+                    <input type="checkbox" checked class="sr-only peer"/>
+                    <div class="switch-track w-10 h-5 rounded-full border border-slate-600 bg-slate-800 transition-all duration-300 flex items-center px-0.5">
+                        <div class="switch-thumb w-4 h-4 rounded-full bg-slate-500 transition-all duration-300 shadow-md"></div>
+                    </div>
+                </label>
+            </div>
+            <p class="text-[11px] text-slate-400 mb-4">Otomatis switch profil optimisasi berdasarkan game yang diluncurkan.</p>
+            <div class="space-y-2.5">
+                <div class="flex items-center justify-between px-3 py-2 rounded-lg bg-white/[0.02] border border-white/5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                        <span class="text-xs text-slate-300">Mobile Legends</span>
+                    </div>
+                    <span class="text-[10px] font-hud tracking-wider text-red-400 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">ULTRA</span>
+                </div>
+                <div class="flex items-center justify-between px-3 py-2 rounded-lg bg-white/[0.02] border border-white/5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-yellow-400"></span>
+                        <span class="text-xs text-slate-300">PUBG Mobile</span>
+                    </div>
+                    <span class="text-[10px] font-hud tracking-wider text-yellow-400 bg-yellow-500/10 px-2 py-0.5 rounded border border-yellow-500/20">BALANCED</span>
+                </div>
+                <div class="flex items-center justify-between px-3 py-2 rounded-lg bg-white/[0.02] border border-white/5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-pink-400"></span>
+                        <span class="text-xs text-slate-300">RetroArch</span>
+                    </div>
+                    <span class="text-[10px] font-hud tracking-wider text-green-400 bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">LIGHT</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: KONFIGURASI DETEKSI -->
+        <section class="hud-panel rounded-2xl p-5 float-up" style="animation-delay: 0.35s">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-primary text-lg">tune</span>
+                <span class="font-hud text-[11px] text-primary tracking-widest">KONFIGURASI</span>
+            </div>
+            <!-- Scan Interval -->
+            <div class="mb-5">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm text-slate-400">timer</span>
+                        <span class="text-xs text-slate-300">Interval Scan</span>
+                    </div>
+                    <span class="font-mono text-sm text-primary font-bold" id="intervalValue">3 detik</span>
+                </div>
+                <input type="range" min="1" max="10" value="3" id="intervalRange"
+                    class="w-full h-1.5 rounded-full appearance-none cursor-pointer"
+                    style="background: linear-gradient(90deg, #00E5FF 30%, rgba(255,255,255,0.1) 30%);" />
+                <div class="flex justify-between text-[9px] text-slate-600 font-mono mt-1">
+                    <span>1s (Cepat)</span><span>5s</span><span>10s (Hemat)</span>
+                </div>
+            </div>
+            <!-- Battery Aware -->
+            <div class="flex items-center justify-between py-3 border-t border-white/5">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-accent-green/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-accent-green text-lg">battery_saver</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-white">Battery-Aware Mode</p>
+                        <p class="text-[10px] text-slate-500">Pause deteksi saat baterai &lt; 20%</p>
+                    </div>
+                </div>
+                <label class="neon-switch relative cursor-pointer">
+                    <input type="checkbox" checked class="sr-only peer"/>
+                    <div class="switch-track w-10 h-5 rounded-full border border-slate-600 bg-slate-800 transition-all duration-300 flex items-center px-0.5">
+                        <div class="switch-thumb w-4 h-4 rounded-full bg-slate-500 transition-all duration-300 shadow-md"></div>
+                    </div>
+                </label>
+            </div>
+            <!-- Notification Controller -->
+            <div class="flex items-center justify-between py-3 border-t border-white/5">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-secondary text-lg">notifications</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-white">Notifikasi Controller</p>
+                        <p class="text-[10px] text-slate-500">Mini-controller di notification bar</p>
+                    </div>
+                </div>
+                <label class="neon-switch relative cursor-pointer">
+                    <input type="checkbox" checked class="sr-only peer"/>
+                    <div class="switch-track w-10 h-5 rounded-full border border-slate-600 bg-slate-800 transition-all duration-300 flex items-center px-0.5">
+                        <div class="switch-thumb w-4 h-4 rounded-full bg-slate-500 transition-all duration-300 shadow-md"></div>
+                    </div>
+                </label>
+            </div>
+            <!-- Auto-Disable Bloatware -->
+            <div class="flex items-center justify-between py-3 border-t border-white/5">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-accent-orange/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-accent-orange text-lg">block</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-white">Auto-Disable App Bawaan</p>
+                        <p class="text-[10px] text-slate-500">Matikan bloatware otomatis saat gaming</p>
+                    </div>
+                </div>
+                <label class="neon-switch relative cursor-pointer">
+                    <input type="checkbox" class="sr-only peer"/>
+                    <div class="switch-track w-10 h-5 rounded-full border border-slate-700 bg-slate-800 transition-all duration-300 flex items-center px-0.5">
+                        <div class="switch-thumb w-4 h-4 rounded-full bg-slate-600 transition-all duration-300"></div>
+                    </div>
+                </label>
+            </div>
+            <!-- Auto Re-Enable -->
+            <div class="flex items-center justify-between py-3 border-t border-white/5">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-lg">restore</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-white">Auto Re-Enable Saat Selesai</p>
+                        <p class="text-[10px] text-slate-500">Aktifkan kembali app setelah game ditutup</p>
+                    </div>
+                </div>
+                <label class="neon-switch relative cursor-pointer">
+                    <input type="checkbox" checked class="sr-only peer"/>
+                    <div class="switch-track w-10 h-5 rounded-full border border-slate-600 bg-slate-800 transition-all duration-300 flex items-center px-0.5">
+                        <div class="switch-thumb w-4 h-4 rounded-full bg-slate-500 transition-all duration-300 shadow-md"></div>
+                    </div>
+                </label>
+            </div>
+        </section>
+
+        <!-- SECTION 5: SESSION STATS -->
+        <section class="hud-panel rounded-2xl p-5 float-up" style="animation-delay: 0.4s">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-accent-orange text-lg">analytics</span>
+                    <span class="font-hud text-[11px] text-accent-orange tracking-widest">SESI TERAKHIR</span>
+                </div>
+                <button class="text-[10px] font-mono text-slate-500 hover:text-primary transition-colors">RIWAYAT ></button>
+            </div>
+            <div class="text-center mb-5">
+                <p class="text-[9px] text-slate-500 font-mono tracking-widest mb-1">DURASI BERMAIN</p>
+                <div class="flex items-center justify-center gap-1 font-hud">
+                    <span class="session-digit text-3xl font-bold text-primary">01</span>
+                    <span class="text-primary/40 text-xl animate-pulse">:</span>
+                    <span class="session-digit text-3xl font-bold text-primary">24</span>
+                    <span class="text-primary/40 text-xl animate-pulse">:</span>
+                    <span class="session-digit text-3xl font-bold text-primary">37</span>
+                </div>
+                <p class="text-[10px] text-slate-500 mt-1">Mobile Legends - 25 Feb 2026</p>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-[10px] text-slate-400 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs text-accent-orange">thermostat</span> Suhu Maks
+                        </span>
+                        <span class="font-mono text-xs text-accent-orange font-bold">72°C</span>
+                    </div>
+                    <div class="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
+                        <div class="stat-bar-fill h-full rounded-full bg-gradient-to-r from-accent-green via-accent-orange to-accent-red" style="width: 72%;"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-[10px] text-slate-400 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs text-primary">speed</span> FPS Rata-rata
+                        </span>
+                        <span class="font-mono text-xs text-primary font-bold">58 FPS</span>
+                    </div>
+                    <div class="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
+                        <div class="stat-bar-fill h-full rounded-full bg-gradient-to-r from-primary to-accent-green" style="width: 88%;"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-[10px] text-slate-400 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs text-accent-green">memory</span> RAM Terpakai
+                        </span>
+                        <span class="font-mono text-xs text-accent-green font-bold">1.8 GB</span>
+                    </div>
+                    <div class="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
+                        <div class="stat-bar-fill h-full rounded-full bg-gradient-to-r from-accent-green to-primary" style="width: 65%;"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-[10px] text-slate-400 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs text-secondary">battery_3_bar</span> Baterai Terpakai
+                        </span>
+                        <span class="font-mono text-xs text-secondary font-bold">23%</span>
+                    </div>
+                    <div class="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
+                        <div class="stat-bar-fill h-full rounded-full bg-gradient-to-r from-secondary to-accent-red" style="width: 23%;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: DETECTION LOG -->
+        <section class="hud-panel rounded-2xl p-5 float-up" style="animation-delay: 0.45s">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-slate-400 text-lg">terminal</span>
+                    <span class="font-hud text-[11px] text-slate-400 tracking-widest">LOG DETEKSI</span>
+                </div>
+                <button class="text-[10px] font-mono text-slate-600 hover:text-accent-red transition-colors">BERSIHKAN</button>
+            </div>
+            <div class="space-y-1.5 font-mono text-[10px] max-h-36 overflow-y-auto pr-1">
+                <div class="flex items-start gap-2 text-accent-green">
+                    <span class="text-slate-600 shrink-0">14:23:01</span>
+                    <span>[DETECT] Mobile Legends diluncurkan → Mode ULTRA diaktifkan</span>
+                </div>
+                <div class="flex items-start gap-2 text-primary">
+                    <span class="text-slate-600 shrink-0">14:23:00</span>
+                    <span>[SCAN] Foreground berubah: com.mobile.legends</span>
+                </div>
+                <div class="flex items-start gap-2 text-accent-orange">
+                    <span class="text-slate-600 shrink-0">14:22:58</span>
+                    <span>[AUTO] 12 app bawaan di-disable untuk RAM</span>
+                </div>
+                <div class="flex items-start gap-2 text-slate-500">
+                    <span class="text-slate-600 shrink-0">14:22:57</span>
+                    <span>[SCAN] Tidak ada game di foreground</span>
+                </div>
+                <div class="flex items-start gap-2 text-accent-orange">
+                    <span class="text-slate-600 shrink-0">14:22:54</span>
+                    <span>[WARN] Baterai 18% — Battery-Aware segera aktif</span>
+                </div>
+                <div class="flex items-start gap-2 text-accent-green">
+                    <span class="text-slate-600 shrink-0">14:20:15</span>
+                    <span>[SYS] Auto-Detect Engine dimulai — interval 3s</span>
+                </div>
+                <div class="flex items-start gap-2 text-secondary">
+                    <span class="text-slate-600 shrink-0">14:20:14</span>
+                    <span>[INIT] Database loaded: 22 game terdaftar</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: QUICK ACTIONS -->
+        <section class="hud-panel rounded-2xl p-5 float-up" style="animation-delay: 0.5s">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-primary text-lg">gamepad</span>
+                <span class="font-hud text-[11px] text-primary tracking-widest">QUICK ACTIONS</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <button class="group relative overflow-hidden rounded-xl p-4 bg-primary/5 border border-primary/20 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 active:scale-95">
+                    <div class="flex flex-col items-center gap-2 relative z-10">
+                        <span class="material-symbols-outlined text-2xl text-primary group-hover:scale-110 transition-transform">radar</span>
+                        <span class="text-xs font-bold text-primary/80 group-hover:text-primary tracking-wider">SCAN ULANG</span>
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-full h-0.5 bg-primary/40 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                </button>
+                <button class="group relative overflow-hidden rounded-xl p-4 bg-accent-red/5 border border-accent-red/20 hover:border-accent-red/50 hover:bg-accent-red/10 transition-all duration-300 active:scale-95">
+                    <div class="flex flex-col items-center gap-2 relative z-10">
+                        <span class="material-symbols-outlined text-2xl text-accent-red group-hover:scale-110 transition-transform">bolt</span>
+                        <span class="text-xs font-bold text-accent-red/80 group-hover:text-accent-red tracking-wider">BOOST NOW</span>
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-full h-0.5 bg-accent-red/40 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                </button>
+                <button class="group relative overflow-hidden rounded-xl p-4 bg-accent-green/5 border border-accent-green/20 hover:border-accent-green/50 hover:bg-accent-green/10 transition-all duration-300 active:scale-95">
+                    <div class="flex flex-col items-center gap-2 relative z-10">
+                        <span class="material-symbols-outlined text-2xl text-accent-green group-hover:scale-110 transition-transform">ac_unit</span>
+                        <span class="text-xs font-bold text-accent-green/80 group-hover:text-accent-green tracking-wider">COOL DOWN</span>
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-full h-0.5 bg-accent-green/40 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                </button>
+                <button class="group relative overflow-hidden rounded-xl p-4 bg-white/[0.02] border border-white/10 hover:border-secondary/40 hover:bg-secondary/5 transition-all duration-300 active:scale-95">
+                    <div class="flex flex-col items-center gap-2 relative z-10">
+                        <span class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-secondary group-hover:scale-110 transition-all">restart_alt</span>
+                        <span class="text-xs font-bold text-slate-500 group-hover:text-secondary tracking-wider">RESET</span>
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-full h-0.5 bg-secondary/40 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                </button>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- BOTTOM NAVIGATION -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 border-t border-primary/10 bg-background-dark/90 backdrop-blur-xl px-4 pb-6 pt-3">
+    <div class="flex justify-around items-center max-w-md mx-auto w-full">
+        <a class="flex flex-1 flex-col items-center gap-1 text-slate-500 hover:text-white transition-colors" href="#">
+            <span class="material-symbols-outlined text-2xl">home</span>
+            <p class="text-[10px] font-medium tracking-wide">Home</p>
+        </a>
+        <a class="flex flex-1 flex-col items-center gap-1 text-slate-500 hover:text-white transition-colors" href="#">
+            <span class="material-symbols-outlined text-2xl">sports_esports</span>
+            <p class="text-[10px] font-medium tracking-wide">Games</p>
+        </a>
+        <a class="relative flex flex-1 flex-col items-center gap-1 -mt-8" href="#">
+            <div class="flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-[0_0_20px_rgba(0,229,255,0.5)] border-4 border-background-dark text-black glow-pulse">
+                <span class="material-symbols-outlined text-3xl font-bold">bolt</span>
+            </div>
+            <p class="text-primary text-[10px] font-bold tracking-wide mt-1">Boost</p>
+        </a>
+        <a class="flex flex-1 flex-col items-center gap-1 text-primary" href="#">
+            <span class="material-symbols-outlined text-2xl">radar</span>
+            <p class="text-[10px] font-bold tracking-wide">Detect</p>
+        </a>
+        <a class="flex flex-1 flex-col items-center gap-1 text-slate-500 hover:text-white transition-colors" href="#">
+            <span class="material-symbols-outlined text-2xl">settings</span>
+            <p class="text-[10px] font-medium tracking-wide">Settings</p>
+        </a>
+    </div>
+</nav>
+
+<script>
+    // Toggle switches interactive
+    document.querySelectorAll('.neon-switch input[type="checkbox"]').forEach(cb => {
+        const track = cb.nextElementSibling;
+        const thumb = track.querySelector('.switch-thumb');
+        function update() {
+            if (cb.checked) {
+                track.style.background = 'rgba(0,229,255,0.2)';
+                track.style.borderColor = '#00E5FF';
+                track.style.boxShadow = '0 0 12px rgba(0,229,255,0.4), inset 0 0 6px rgba(0,229,255,0.15)';
+                thumb.style.transform = 'translateX(100%)';
+                thumb.style.background = '#00E5FF';
+                thumb.style.boxShadow = '0 0 10px rgba(0,229,255,0.8)';
+            } else {
+                track.style.background = ''; track.style.borderColor = ''; track.style.boxShadow = '';
+                thumb.style.transform = ''; thumb.style.background = ''; thumb.style.boxShadow = '';
+            }
+        }
+        update();
+        cb.addEventListener('change', update);
+    });
+
+    // Range slider
+    const range = document.getElementById('intervalRange');
+    const label = document.getElementById('intervalValue');
+    if (range && label) {
+        range.addEventListener('input', function() {
+            label.textContent = this.value + ' detik';
+            const pct = ((this.value - this.min) / (this.max - this.min)) * 100;
+            this.style.background = `linear-gradient(90deg, #00E5FF ${pct}%, rgba(255,255,255,0.1) ${pct}%)`;
+        });
+    }
+</script>
+</body>
+</html>

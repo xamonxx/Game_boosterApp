@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MODE DEWA Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Roboto+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#06e0f9",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#0A0A0A",
+                        "glass-dark": "rgba(255, 255, 255, 0.03)",
+                        "glass-border": "rgba(255, 255, 255, 0.08)",
+                        "neon-glow": "0 0 10px rgba(6, 224, 249, 0.5)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "mono": ["Roboto Mono", "monospace"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    backgroundImage: {
+                        'cyber-grid': "radial-gradient(circle at 50% 50%, rgba(6, 224, 249, 0.05) 1px, transparent 1px)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom range slider styling for neon effect */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #06e0f9;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 0 10px rgba(6, 224, 249, 0.8), 0 0 20px rgba(6, 224, 249, 0.4);
+            border: 2px solid #fff;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+        
+        /* Custom Toggle Switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #06e0f9;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: rgba(6, 224, 249, 0.2);
+            border-color: #06e0f9;
+        }
+        .toggle-checkbox:checked + .toggle-label:before {
+            transform: translateX(100%);
+            background-color: #06e0f9;
+            box-shadow: 0 0 10px rgba(6, 224, 249, 0.8);
+        }
+        
+        /* Grid background pattern */
+        .bg-grid-pattern {
+            background-size: 24px 24px;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased selection:bg-primary selection:text-black">
+<!-- Ambient Glow Background -->
+<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[100px] rounded-full"></div>
+<div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+</div>
+<!-- Main Content Wrapper -->
+<div class="relative z-10 flex-1 flex flex-col max-w-md mx-auto w-full bg-transparent shadow-2xl min-h-screen pb-24">
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-background-dark/80 backdrop-blur-xl border-b border-white/5 px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<div>
+<h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                        MODE DEWA
+                        <span class="text-[10px] bg-primary/20 text-primary border border-primary/30 px-1.5 py-0.5 rounded font-mono">PRO</span>
+</h1>
+<p class="text-xs text-slate-400 font-medium tracking-wide uppercase">System Configuration</p>
+</div>
+</div>
+<button class="text-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl">save</span>
+</button>
+</header>
+<!-- Scrollable Content -->
+<main class="flex-1 px-4 py-6 flex flex-col gap-6">
+<!-- Performance Section -->
+<section>
+<h2 class="text-primary text-sm font-bold uppercase tracking-wider mb-3 px-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">speed</span>
+                    Performance
+                </h2>
+<div class="bg-glass-dark border border-glass-border backdrop-blur-md rounded-2xl overflow-hidden">
+<!-- Auto-detect Game -->
+<div class="p-4 border-b border-white/5 flex items-center justify-between hover:bg-white/5 transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:text-primary group-hover:bg-primary/10 transition-all">
+<span class="material-symbols-outlined">sports_esports</span>
+</div>
+<div>
+<h3 class="font-medium text-white">Auto-detect Game</h3>
+<p class="text-xs text-slate-400">Boost automatically when launched</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer toggle-checkbox" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary peer-checked:shadow-[0_0_10px_rgba(6,224,249,0.5)]"></div>
+</label>
+</div>
+<!-- Temperature Slider -->
+<div class="p-4 border-b border-white/5">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-400">
+<span class="material-symbols-outlined">thermometer</span>
+</div>
+<div>
+<h3 class="font-medium text-white">Temp Safety Limit</h3>
+<p class="text-xs text-slate-400">Throttling threshold</p>
+</div>
+</div>
+<span class="font-mono text-primary text-lg font-bold">75°C</span>
+</div>
+<div class="mt-4 px-1">
+<input class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary" max="85" min="70" type="range" value="75"/>
+<div class="flex justify-between text-[10px] text-slate-500 font-mono mt-1">
+<span>70°C</span>
+<span>85°C</span>
+</div>
+</div>
+</div>
+<!-- SIM Protection -->
+<div class="p-4 flex items-center justify-between hover:bg-white/5 transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 group-hover:text-primary group-hover:bg-primary/10 transition-all">
+<span class="material-symbols-outlined">security</span>
+</div>
+<div>
+<h3 class="font-medium text-white">SIM Protection</h3>
+<p class="text-xs text-slate-400">Prevent network interruptions</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer toggle-checkbox" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary peer-checked:shadow-[0_0_10px_rgba(6,224,249,0.5)]"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- Interface Section -->
+<section>
+<h2 class="text-primary text-sm font-bold uppercase tracking-wider mb-3 px-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">tune</span>
+                    Interface
+                </h2>
+<div class="bg-glass-dark border border-glass-border backdrop-blur-md rounded-2xl overflow-hidden">
+<!-- Theme Toggle -->
+<div class="p-4 border-b border-white/5 flex items-center justify-between hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-700/50 flex items-center justify-center text-slate-300">
+<span class="material-symbols-outlined">dark_mode</span>
+</div>
+<h3 class="font-medium text-white">Theme</h3>
+</div>
+<div class="flex bg-black/40 p-1 rounded-lg border border-white/5">
+<button class="px-3 py-1 rounded text-xs font-medium text-slate-400 hover:text-white transition-colors">Light</button>
+<button class="px-3 py-1 rounded text-xs font-medium bg-slate-800 text-primary shadow-sm border border-white/10">Dark</button>
+</div>
+</div>
+<!-- Language -->
+<div class="p-4 border-b border-white/5 flex items-center justify-between hover:bg-white/5 transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-700/50 flex items-center justify-center text-slate-300 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">language</span>
+</div>
+<h3 class="font-medium text-white">Language</h3>
+</div>
+<div class="flex items-center gap-2 text-slate-400 group-hover:text-primary transition-colors">
+<span class="text-sm">English</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</div>
+</div>
+<!-- Notifications -->
+<div class="p-4 flex items-center justify-between hover:bg-white/5 transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-700/50 flex items-center justify-center text-slate-300 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications_active</span>
+</div>
+<div>
+<h3 class="font-medium text-white">Game Detected</h3>
+<p class="text-xs text-slate-400">Notify when booster activates</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer toggle-checkbox" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary peer-checked:shadow-[0_0_10px_rgba(6,224,249,0.5)]"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- System Section -->
+<section>
+<h2 class="text-primary text-sm font-bold uppercase tracking-wider mb-3 px-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">info</span>
+                    System
+                </h2>
+<div class="bg-glass-dark border border-glass-border backdrop-blur-md rounded-2xl overflow-hidden">
+<div class="p-4 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer group">
+<div class="flex items-center justify-between">
+<span class="text-white font-medium group-hover:text-primary transition-colors">About MODE DEWA</span>
+<span class="material-symbols-outlined text-slate-500 text-sm">open_in_new</span>
+</div>
+</div>
+<div class="p-4 flex items-center justify-between">
+<span class="text-slate-400 font-medium">Version</span>
+<span class="font-mono text-primary text-sm tracking-tight">v2.4.0 <span class="text-slate-600">(390)</span></span>
+</div>
+</div>
+</section>
+<div class="h-6"></div>
+</main>
+<!-- Bottom Navigation (From Component List, modified for dark theme context) -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 border-t border-[#27383a] bg-[#111818]/90 backdrop-blur-lg px-4 pb-6 pt-3">
+<div class="flex justify-around items-center max-w-md mx-auto w-full">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9bb8bb] hover:text-white transition-colors group" href="#">
+<div class="group-hover:text-white transition-colors flex h-6 items-center justify-center">
+<span class="material-symbols-outlined text-2xl">home</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-wide">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9bb8bb] hover:text-white transition-colors group" href="#">
+<div class="group-hover:text-white transition-colors flex h-6 items-center justify-center">
+<span class="material-symbols-outlined text-2xl">sports_esports</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-wide">Games</p>
+</a>
+<a class="relative flex flex-1 flex-col items-center justify-end gap-1 group -mt-8" href="#">
+<div class="flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-[0_0_15px_rgba(6,224,249,0.5)] border-4 border-[#111818] text-black">
+<span class="material-symbols-outlined text-3xl font-bold">bolt</span>
+</div>
+<p class="text-primary text-xs font-bold leading-normal tracking-wide mt-1">Boost</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9bb8bb] hover:text-white transition-colors group" href="#">
+<div class="group-hover:text-white transition-colors flex h-6 items-center justify-center">
+<span class="material-symbols-outlined text-2xl">bar_chart</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-wide">Stats</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<div class="flex h-6 items-center justify-center">
+<span class="material-symbols-outlined text-2xl fill-current">settings</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-wide">Settings</p>
+</a>
+</div>
+</nav>
+</div>
+</body></html>

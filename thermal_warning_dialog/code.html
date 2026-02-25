@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Thermal Warning Dialog - MODE DEWA</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff3c00",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#181210", // Darker for immersive gaming feel
+                        "card-dark": "rgba(24, 18, 16, 0.85)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                    animation: {
+                        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        'pulse-glow': {
+                            '0%, 100%': { boxShadow: '0 0 15px rgba(255, 60, 0, 0.3), inset 0 0 10px rgba(255, 60, 0, 0.1)' },
+                            '50%': { boxShadow: '0 0 35px rgba(255, 60, 0, 0.6), inset 0 0 20px rgba(255, 60, 0, 0.2)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #000; /* Fallback */
+        }
+        /* Custom Glassmorphism Utility */
+        .glass-panel {
+            background: linear-gradient(180deg, rgba(35, 20, 15, 0.9) 0%, rgba(15, 10, 8, 0.95) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        
+        /* Scanline effect for background */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display text-slate-900 dark:text-slate-100 overflow-hidden relative selection:bg-primary selection:text-white">
+<!-- Simulated Game Background (Blurred) -->
+<div class="absolute inset-0 z-0 opacity-40">
+<div class="w-full h-full bg-cover bg-center" data-alt="Abstract futuristic gaming cyber city background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuASxDJ4JX7-y1D5SqE4N3sjWtzJMQxMiq6mtZ0x7ROe3yHUKwiQqDqngpZtXx_Crn2hXe3pJJexw5wb4lxTwzOv8l-gd_j-dnoEschyOD8-K9EEGn7tBRmRVTK16mo2JbSJbJcDgKL-ha1sxNhYVIHWB_uCrV-DcQZIHE7_IMLNXDOcAMLirl48UHOzDWriDsA4UT0_sTXbYd6X2t_6341rfks1CkeS241IdRXen9TYkQIKqJ-rdHV2LY3Nc7eLhXHjvPvnrxPlfS4');"></div>
+<div class="absolute inset-0 bg-background-dark/80"></div>
+</div>
+<!-- Main Content Wrapper -->
+<main class="relative z-10 flex-1 flex flex-col items-center justify-center p-4 min-h-screen w-full">
+<!-- Warning Modal -->
+<div class="relative w-full max-w-[360px] animate-pulse-glow rounded-3xl border border-primary/50 overflow-hidden">
+<!-- Glass Background Layer -->
+<div class="glass-panel absolute inset-0 z-0"></div>
+<!-- Decorative Hazard Stripes Top -->
+<div class="absolute top-0 left-0 right-0 h-2 bg-[repeating-linear-gradient(45deg,#ff3c00,#ff3c00_10px,transparent_10px,transparent_20px)] opacity-60 z-10"></div>
+<!-- Content Container -->
+<div class="relative z-20 flex flex-col items-center pt-10 pb-6 px-6 text-center">
+<!-- Icon Area -->
+<div class="relative mb-6 group">
+<div class="absolute inset-0 bg-primary/20 rounded-full blur-xl scale-150 animate-pulse"></div>
+<span class="material-symbols-outlined text-[80px] text-primary relative z-10 drop-shadow-[0_0_15px_rgba(255,60,0,0.8)]">
+                        warning
+                    </span>
+<span class="material-symbols-outlined text-[32px] text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[45%] z-20 font-bold">
+                        thermostat
+                    </span>
+</div>
+<!-- Headline -->
+<h1 class="text-3xl font-bold tracking-tight text-primary uppercase drop-shadow-[0_0_8px_rgba(255,60,0,0.5)] mb-2">
+                    PERINGATAN<br/>THERMAL!
+                </h1>
+<!-- Temperature Readout -->
+<div class="my-4 flex items-center justify-center gap-2 bg-black/40 px-6 py-2 rounded-lg border border-primary/30 shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]">
+<span class="text-sm text-slate-400 font-medium uppercase tracking-wider">SUHU SAAT INI</span>
+<span class="text-3xl font-bold text-white tabular-nums tracking-widest text-shadow-red">76°C</span>
+</div>
+<!-- Body Text -->
+<div class="space-y-3 mb-8">
+<p class="text-slate-200 text-base font-medium leading-relaxed">
+                        Suhu HP melebihi batas aman!
+                    </p>
+<div class="bg-primary/10 border-l-2 border-primary p-3 rounded-r-lg text-left">
+<p class="text-primary/90 text-sm font-medium leading-snug">
+<span class="material-symbols-outlined text-sm align-middle mr-1">gpp_bad</span>
+                            Thermal protection dimatikan. Perangkat berisiko rusak permanen jika dilanjutkan.
+                        </p>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="w-full flex flex-col gap-3">
+<!-- Primary Safety Action -->
+<button class="w-full h-14 bg-primary hover:bg-red-600 active:scale-[0.98] transition-all duration-200 rounded-full flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(255,60,0,0.4)] relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+<span class="material-symbols-outlined text-white">severe_cold</span>
+<span class="text-white font-bold text-lg tracking-wide uppercase">Matikan Mode</span>
+</button>
+<!-- Secondary Risk Action -->
+<button class="w-full h-12 bg-transparent border border-slate-600 hover:border-slate-400 hover:bg-slate-800/50 active:scale-[0.98] transition-all duration-200 rounded-full flex items-center justify-center gap-2 text-slate-400 group">
+<span class="font-semibold text-sm tracking-widest uppercase group-hover:text-slate-200 transition-colors">Lanjutkan</span>
+<span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+<p class="mt-6 text-[10px] text-slate-600 uppercase tracking-widest font-bold">
+                    Mode Dewa System Override
+                </p>
+</div>
+<!-- Decorative Hazard Stripes Bottom -->
+<div class="absolute bottom-0 left-0 right-0 h-2 bg-[repeating-linear-gradient(45deg,#ff3c00,#ff3c00_10px,transparent_10px,transparent_20px)] opacity-60 z-10"></div>
+</div>
+</main>
+<!-- Scanline Overlay for retro gaming feel -->
+<div class="fixed inset-0 pointer-events-none z-50 scanlines opacity-20"></div>
+</body></html>
