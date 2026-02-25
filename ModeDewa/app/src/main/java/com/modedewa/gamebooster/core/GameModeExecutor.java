@@ -58,7 +58,7 @@ public class GameModeExecutor {
     /**
      * Creates an executor bound to the given game package.
      *
-     * @param context the application context for resource access
+     * @param context           the application context for resource access
      * @param targetGamePackage fully-qualified package name of the game to optimise for
      *                          (e.g. {@code "com.mobile.legends"})
      */
@@ -134,6 +134,119 @@ public class GameModeExecutor {
      * re-enable notifications, sync, and previously-disabled apps.
      * Progress is reported via the registered {@link ProgressListener}.
      */
+    public void deactivateGameMode() {
+        new Thread(() -> {
+            Log.d(TAG, "═══ DEACTIVATING GAME MODE ═══");
+            List<OptimizationStep> steps = buildDeactivateSteps();
+            boolean allOk = true;
+
+            for (int i = 0; i < steps.size(); i++) {
+                OptimizationStep step = steps.get(i);
+                step.status = OptimizationStep.Status.RUNNING;
+                notifyStepStarted(i, step);
+
+                try {
+                    boolean result = executeDeactivateStep(i, step);
+                    step.status = result ? OptimizationStep.Status.SUCCESS
+                            : OptimizationStep.Status.FAILED;
+                    if (!result) allOk = false;
+                } catch (Exception e) {
+                    step.status = OptimizationStep.Status.FAILED;
+                    step.message = e.getMessage();
+                    allOk = false;
+                }
+
+                notifyStepCompleted(i, step);
+                try { Thread.sleep(150); } catch (InterruptedException ignored) {}
+            }
+
+            notifyAllCompleted(allOk, allOk
+                    ? "Mode normal dipulihkan ✓" : "Beberapa restore gagal.");
+            Log.d(TAG, "═══ GAME MODE DEACTIVATED ═══");
+        }).start();
+    }
+
+    // ═══════════════════════════════════════════════
+    // Build Steps Lists
+    // ═══════════════════════════════════════════════
+
+    private List<OptimizationStep> buildActivateSteps() {
+        List<OptimizationStep> steps = new ArrayList<>();
+        steps.add(new OptimizationStep("🎭", "Matikan Animasi", "Nonaktifkan animasi sistem"));
+        steps.add(new OptimizationStep("⚡", "Mode Performa", "Aktifkan developer performance settings"));
+        steps.add(new OptimizationStep("📱", "Refresh Rate", "Set refresh rate optimal"));
+        steps.add(new OptimizationStep("🔪", "Kill Background", "Matikan app background"));
+        steps.add(new OptimizationStep("🧹", "Bersihkan RAM", "Trim cache & memory"));
+        steps.add(new OptimizationStep("🎮", "Game Mode API", "Set performa game via API"));
+        steps.add(new OptimizationStep("🔓", "FPS Unlock", "Hapus batasan FPS"));
+        steps.add(new OptimizationStep("🌐", "Optimasi Jaringan", "Optimasi WiFi & DNS"));
+        steps.add(new OptimizationStep("🖥️", "Optimasi Layar", "Brightness & timeout"));
+        steps.add(new OptimizationStep("🔕", "Block Notifikasi", "Aktifkan DND & block notif"));
+        steps.add(new OptimizationStep("🔇", "Optimasi Audio", "Matikan suara sistem"));
+        steps.add(new OptimizationStep("🔄", "Matikan Sync", "Nonaktifkan auto-sync"));
+        steps.add(new OptimizationStep("⛔", "Disable Fitur", "Matikan fitur tidak perlu"));
+        steps.add(new OptimizationStep("📦", "Disable Apps", "Nonaktifkan app non-gaming"));
+        steps.add(new OptimizationStep("📶", "Cek SIM Card", "Safety check SIM & sinyal"));
+        return steps;
+    }
+
+    private List<OptimizationStep> buildDeactivateSteps() {
+        List<OptimizationStep> steps = new ArrayList<>();
+        steps.add(new OptimizationStep("🎭", "Pulihkan Animasi", "Aktifkan kembali animasi"));
+        steps.add(new OptimizationStep("⚡", "Mode Normal", "Kembalikan performance settings"));
+        steps.add(new OptimizationStep("📱", "Refresh Rate", "Reset refresh rate default"));
+        steps.add(new OptimizationStep("🎮", "Game Mode Reset", "Kembalikan game mode standard"));
+        steps.add(new OptimizationStep("🌐", "Jaringan Normal", "Reset network settings"));
+        steps.add(new OptimizationStep("🖥️", "Layar Normal", "Reset display settings"));
+        steps.add(new OptimizationStep("🔔", "Pulihkan Notifikasi", "Nonaktifkan DND"));
+        steps.add(new OptimizationStep("🔊", "Pulihkan Audio", "Aktifkan suara sistem"));
+        steps.add(new OptimizationStep("🔄", "Pulihkan Sync", "Aktifkan auto-sync"));
+        steps.add(new OptimizationStep("✅", "Pulihkan Fitur", "Aktifkan fitur kembali"));
+        steps.add(new OptimizationStep("📦", "Enable Apps", "Aktifkan kembali semua app"));
+        steps.add(new OptimizationStep("📶", "Cek SIM Card", "Verifikasi SIM aman"));
+        return steps;
+    }
+
+    // ═══════════════════════════════════════════════
+    // Execute Individual Steps
+    // ═══════════════════════════════════════════════
+
+    private boolean executeActivateStep(int index, OptimizationStep step) {
+        switch (index) {
+            case 0:  return SettingsTweaker.disableAnimations();
+            case 1:  return SettingsTweaker.enablePerformanceMode();
+            case 2:  return SettingsTweaker.setRefreshRate(60.0f);
+            case 3:
+                int killed = AppKiller.killHeavyApps(context);
+                AppKiller.killAllBackground(context, targetGame);
+                step.message = killed + " app dihentikan";
+                return true;
+            case 4:
+                AppKiller.trimCaches();
+                AppKiller.trimMemory();
+                step.message = "Cache & memory dibersihkan";
+                return true;
+            case 5:  return GameModeController.setPerformanceMode(targetGame);
+            case 6:  return GameModeController.unlockFPS(targetGame);
+            case 7:  return NetworkOptimizer.optimizeForGaming();
+            case 8:  return DisplayController.optimizeForGaming();
+            case 9:
+                NotificationController.enableDND();
+                int blocked = NotificationController.blockNotifications();
+                step.message = blocked + " notifikasi diblockir";
+                return true;
+            case 10: return AudioController.optimizeForGaming();
+            case 11: return SyncController.disableSync();
+            case 12: return FeatureController.disableUnnecessary();
+            case 13:
+                int disabled = AppKiller.disableNonEssentialApps(context);
+                step.message = disabled + " app dinonaktifkan";
+                return true;
+            case 14:
+                SimProtector.HealthReport report = SimProtector.checkHealth();
+                step.message = report.message;
+                return report.simStatus == SimProtector.SimStatus.READY
+                        || report.simStatus == SimProtector.SimStatus.UNKNOWN;
             default: return false;
         }
     }
