@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Dark Theme -->
+    <style name="Theme.ModeDewa" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/neon_cyan</item>
+        <item name="colorPrimaryContainer">@color/card_dark</item>
+        <item name="colorOnPrimary">@color/background_dark</item>
+        <item name="colorSecondary">@color/neon_magenta</item>
+        <item name="colorSecondaryContainer">@color/card_dark</item>
+        <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        <item name="android:windowBackground">@color/background_dark</item>
+        <item name="android:statusBarColor">@color/background_dark</item>
+        <item name="android:navigationBarColor">@color/background_dark</item>
+    </style>
+
+    <!-- Splash Theme -->
+    <style name="Theme.ModeDewa.Splash" parent="Theme.ModeDewa">
+        <item name="android:windowBackground">@color/background_dark</item>
+    </style>
+
+    <!-- Card Style -->
+    <style name="Widget.ModeDewa.Card" parent="Widget.Material3.CardView.Filled">
+        <item name="cardBackgroundColor">@color/card_dark</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeColor">@color/card_border</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+    <!-- Toggle Button (ON) — explicit parent avoids implicit Widget.ModeDewa lookup -->
+    <style name="Widget.ModeDewa.ToggleOn" parent="">
+        <item name="android:background">@color/toggle_on</item>
+        <item name="android:textColor">@color/background_dark</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Primary Button -->
+    <style name="Widget.ModeDewa.Button" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/neon_cyan</item>
+        <item name="android:textColor">@color/background_dark</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
+
+    <!-- Outlined Button -->
+    <style name="Widget.ModeDewa.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/neon_cyan</item>
+        <item name="android:textColor">@color/neon_cyan</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
+
+    <!-- Section Title — explicit parent avoids implicit TextAppearance.ModeDewa lookup -->
+    <style name="TextAppearance.ModeDewa.SectionTitle" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_tertiary</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.1</item>
+    </style>
+
+    <!-- Value Display (big numbers) -->
+    <style name="TextAppearance.ModeDewa.Value" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textSize">28sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">monospace</item>
+    </style>
+</resources>

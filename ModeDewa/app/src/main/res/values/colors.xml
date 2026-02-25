@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Dark Theme -->
+    <color name="background_dark">#FF0A0A0F</color>
+    <color name="surface_dark">#FF14141F</color>
+    <color name="card_dark">#FF1A1A2E</color>
+    <color name="card_border">#FF2A2A3E</color>
+
+    <!-- Neon Accents -->
+    <color name="neon_cyan">#FF00E5FF</color>
+    <color name="neon_cyan_dim">#8000E5FF</color>
+    <color name="neon_magenta">#FFFF00E5</color>
+    <color name="neon_green">#FF00FF88</color>
+    <color name="neon_orange">#FFFF9800</color>
+
+    <!-- Status Colors -->
+    <color name="status_active">#FF00E676</color>
+    <color name="status_inactive">#FF666680</color>
+    <color name="status_warning">#FFFFAB00</color>
+    <color name="status_danger">#FFFF3D00</color>
+    <color name="status_critical">#FFFF0040</color>
+
+    <!-- Text -->
+    <color name="text_primary">#FFFFFFFF</color>
+    <color name="text_secondary">#B3FFFFFF</color>
+    <color name="text_tertiary">#66FFFFFF</color>
+
+    <!-- Temperature Gradient -->
+    <color name="temp_cool">#FF00E676</color>
+    <color name="temp_warm">#FFFFAB00</color>
+    <color name="temp_hot">#FFFF3D00</color>
+    <color name="temp_critical">#FFFF0040</color>
+
+    <!-- Toggle -->
+    <color name="toggle_on">#FF00E5FF</color>
+    <color name="toggle_off">#FF333350</color>
+
+    <!-- Preset Buttons -->
+    <color name="preset_light">#FF00E676</color>
+    <color name="preset_balanced">#FFFFAB00</color>
+    <color name="preset_ultra">#FFFF3D00</color>
+
+    <!-- Auto-Detect HUD -->
+    <color name="hud_panel_bg">#E612122A</color>
+    <color name="hud_border_cyan">#2600E5FF</color>
+    <color name="hud_radar_ring">#1A00E5FF</color>
+    <color name="hud_radar_sweep">#4D00E5FF</color>
+    <color name="hud_radar_dot_green">#FF00FF88</color>
+    <color name="hud_radar_dot_orange">#FFFF9800</color>
+    <color name="label_auto_bg">#1A00FF88</color>
+    <color name="label_manual_bg">#1A00E5FF</color>
+    <color name="label_off_bg">#1A666680</color>
+    <color name="session_glow">#8000E5FF</color>
+</resources>

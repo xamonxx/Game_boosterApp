@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MODE DEWA</string>
+    <string name="app_subtitle">Game Booster Ultra</string>
+    <string name="app_version">v1.0.0</string>
+
+    <!-- Splash -->
+    <string name="splash_checking">Memeriksa sistem…</string>
+    <string name="splash_shizuku_ok">✓ Shizuku Terdeteksi</string>
+    <string name="splash_shizuku_fail">✗ Shizuku Tidak Aktif</string>
+    <string name="splash_no_shizuku">Shizuku diperlukan untuk optimasi.\nInstall dan aktifkan Shizuku terlebih dahulu.</string>
+    <string name="splash_permission_needed">Izin Shizuku diperlukan</string>
+
+    <!-- Home -->
+    <string name="home_title">MODE DEWA</string>
+    <string name="mode_aktif">ULTRA RATA KANAN AKTIF</string>
+    <string name="mode_nonaktif">MODE NORMAL</string>
+    <string name="tap_to_activate">Tap untuk mengaktifkan</string>
+    <string name="tap_to_deactivate">Tap untuk menonaktifkan</string>
+
+    <!-- Status Cards -->
+    <string name="card_cpu">CPU</string>
+    <string name="card_gpu">GPU</string>
+    <string name="card_ram">RAM</string>
+    <string name="card_temp">SUHU</string>
+    <string name="card_battery">BATERAI</string>
+    <string name="card_fps">FPS</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_profiles">Profil</string>
+    <string name="nav_monitor">Monitor</string>
+    <string name="nav_settings">Pengaturan</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profil Game</string>
+    <string name="profile_detected">Game Terdeteksi</string>
+    <string name="profile_no_game">Tidak ada game terdeteksi</string>
+    <string name="preset_light">Light</string>
+    <string name="preset_balanced">Balanced</string>
+    <string name="preset_ultra">Ultra</string>
+    <string name="btn_apply">Terapkan &amp; Mulai Game</string>
+
+    <!-- Module Toggles -->
+    <string name="mod_animations">Matikan Animasi</string>
+    <string name="mod_animations_desc">Nonaktifkan animasi sistem</string>
+    <string name="mod_gpu_render">Force GPU Rendering</string>
+    <string name="mod_gpu_render_desc">Paksa GPU untuk rendering semua</string>
+    <string name="mod_bg_limit">Background Limit</string>
+    <string name="mod_bg_limit_desc">Batasi proses background = 0</string>
+    <string name="mod_kill_apps">Kill Background Apps</string>
+    <string name="mod_kill_apps_desc">Matikan semua app background</string>
+    <string name="mod_disable_apps">Disable App Non-Gaming</string>
+    <string name="mod_disable_apps_desc">Nonaktifkan app yang tidak terpakai</string>
+    <string name="mod_game_mode">Game Mode API</string>
+    <string name="mod_game_mode_desc">Aktifkan mode performa Android</string>
+    <string name="mod_fps_unlock">FPS Unlock</string>
+    <string name="mod_fps_unlock_desc">Hapus batasan FPS dari OEM</string>
+    <string name="mod_network">Optimasi Jaringan</string>
+    <string name="mod_network_desc">WiFi sleep off, optimasi DNS</string>
+    <string name="mod_display">Optimasi Layar</string>
+    <string name="mod_display_desc">Refresh rate, brightness, immersive</string>
+    <string name="mod_notif">Block Notifikasi</string>
+    <string name="mod_notif_desc">Matikan notifikasi yang mengganggu</string>
+    <string name="mod_dnd">Mode Jangan Ganggu</string>
+    <string name="mod_dnd_desc">Aktifkan DND saat gaming</string>
+    <string name="mod_sync">Matikan Sinkronisasi</string>
+    <string name="mod_sync_desc">Nonaktifkan auto-sync &amp; update</string>
+    <string name="mod_clean_ram">Bersihkan RAM</string>
+    <string name="mod_clean_ram_desc">Trim cache &amp; memory</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Pengaturan</string>
+    <string name="settings_general">Umum</string>
+    <string name="settings_safety">Keamanan</string>
+    <string name="settings_about">Tentang</string>
+    <string name="settings_temp_limit">Batas Suhu Peringatan</string>
+    <string name="settings_sim_protection">Proteksi SIM Card</string>
+    <string name="settings_sim_desc">Cek kesehatan SIM setelah optimasi</string>
+    <string name="settings_auto_detect">Auto-detect Game</string>
+    <string name="settings_auto_detect_desc">Otomatis deteksi game terinstall</string>
+    <string name="settings_about_text">MODE DEWA v1.0.0\nGame Booster untuk Unisoc SC9863A\nDibuat dengan ❤️</string>
+
+    <!-- Warning Dialog -->
+    <string name="warning_title">⚠️ PERINGATAN!</string>
+    <string name="warning_thermal">Suhu HP melebihi batas aman!\nMode gaming akan dinonaktifkan untuk keamanan.</string>
+    <string name="warning_confirm">Saya Mengerti</string>
+    <string name="warning_deactivate">Nonaktifkan Mode</string>
+    <string name="warning_continue">Lanjutkan</string>
+
+    <!-- Progress -->
+    <string name="progress_title">Mengaktifkan Mode Dewa…</string>
+    <string name="progress_restore_title">Mengembalikan ke Normal…</string>
+    <string name="progress_done">Selesai!</string>
+
+    <!-- Floating Monitor -->
+    <string name="monitor_notification_title">MODE DEWA Aktif</string>
+    <string name="monitor_notification_text">Monitoring performa game…</string>
+
+    <!-- Auto-Detect Controller -->
+    <string name="auto_detect_title">AUTO-DETECT</string>
+    <string name="auto_detect_subtitle">GAME DETECTION CONTROLLER v2.0</string>
+    <string name="auto_detect_engine">DETECTION ENGINE</string>
+    <string name="auto_detect_detected">TERDETEKSI</string>
+    <string name="auto_detect_active">AKTIF</string>
+    <string name="auto_detect_inactive">NONAKTIF</string>
+    <string name="auto_detect_apps_title">APLIKASI TERDETEKSI</string>
+    <string name="auto_detect_add">TAMBAH</string>
+    <string name="auto_detect_smart_profile">SMART PROFIL</string>
+    <string name="auto_detect_smart_profile_desc">Otomatis switch profil optimisasi berdasarkan game yang diluncurkan.</string>
+    <string name="auto_detect_config">KONFIGURASI</string>
+    <string name="auto_detect_interval">Interval Scan</string>
+    <string name="auto_detect_battery_aware">Battery-Aware Mode</string>
+    <string name="auto_detect_battery_aware_desc">Pause deteksi saat baterai &lt; 20%</string>
+    <string name="auto_detect_notif_ctrl">Notifikasi Controller</string>
+    <string name="auto_detect_notif_ctrl_desc">Mini-controller di notification bar saat gaming</string>
+    <string name="auto_detect_disable_bloat">Auto-Disable App Bawaan</string>
+    <string name="auto_detect_disable_bloat_desc">Matikan bloatware otomatis saat gaming</string>
+    <string name="auto_detect_re_enable">Auto Re-Enable Saat Selesai</string>
+    <string name="auto_detect_re_enable_desc">Aktifkan kembali app setelah game ditutup</string>
+    <string name="auto_detect_last_session">SESI TERAKHIR</string>
+    <string name="auto_detect_play_duration">DURASI BERMAIN</string>
+    <string name="auto_detect_max_temp">Suhu Maks</string>
+    <string name="auto_detect_avg_fps">FPS Rata-rata</string>
+    <string name="auto_detect_ram_used">RAM Terpakai</string>
+    <string name="auto_detect_battery_used">Baterai Terpakai</string>
+    <string name="auto_detect_log">LOG DETEKSI</string>
+    <string name="auto_detect_clear">BERSIHKAN</string>
+    <string name="auto_detect_quick_actions">QUICK ACTIONS</string>
+    <string name="auto_detect_scan">SCAN ULANG</string>
+    <string name="auto_detect_boost">BOOST NOW</string>
+    <string name="auto_detect_cool">COOL DOWN</string>
+    <string name="auto_detect_reset">RESET</string>
+    <string name="auto_detect_status_auto">AUTO</string>
+    <string name="auto_detect_status_manual">MANUAL</string>
+    <string name="auto_detect_status_off">MATI</string>
+    <string name="auto_detect_add_title">Tambah Aplikasi Custom</string>
+    <string name="auto_detect_add_hint">com.example.game</string>
+    <string name="auto_detect_add_message">Masukkan package name aplikasi:</string>
+    <string name="auto_detect_profile_title">Pilih Profil Optimisasi</string>
+
+    <!-- Notification Controller -->
+    <string name="notif_ctrl_title">MODE DEWA AKTIF</string>
+    <string name="notif_ctrl_subtitle">Game Booster Controller</string>
+    <string name="notif_ctrl_boost">BOOST</string>
+    <string name="notif_ctrl_cool">COOL DOWN</string>
+    <string name="notif_ctrl_stop">STOP</string>
+
+    <!-- Game Detection Service -->
+    <string name="detection_svc_channel">Game Detection Service</string>
+    <string name="detection_svc_monitoring">Monitoring aktif…</string>
+    <string name="detection_svc_game_active">Game aktif: %1$s [%2$s]</string>
+
+    <!-- Floating Monitor Overlay -->
+    <string name="overlay_title">MODE DEWA HUD</string>
+    <string name="overlay_collapse">Kecilkan</string>
+    <string name="overlay_close">Tutup Monitor</string>
+    <string name="overlay_temp_warning">Peringatan Suhu</string>
+    <string name="overlay_toggle_hud">Toggle HUD</string>
+    <string name="overlay_stop">Stop Monitor</string>
+
+    <!-- Session History -->
+    <string name="history_title">RIWAYAT SESI</string>
+    <string name="history_subtitle">GAME SESSION HISTORY</string>
+    <string name="history_clear">HAPUS SEMUA</string>
+    <string name="history_clear_confirm">Hapus semua riwayat sesi gaming?</string>
+    <string name="history_total_sessions">Total Sesi</string>
+    <string name="history_total_time">Total Waktu</string>
+    <string name="history_max_temp">Suhu Tertinggi</string>
+    <string name="history_empty">Belum ada riwayat sesi gaming.\nMulai bermain untuk merekam statistik.</string>
+    <string name="history_date_format">dd MMM yyyy, HH:mm</string>
+    <string name="history_profile_label">Profil: %1$s</string>
+    <string name="history_battery_drain">Baterai: %1$d%% → %2$d%%</string>
+    <string name="history_apps_disabled">%1$d app dimatikan</string>
+
+    <!-- Widget -->
+    <string name="widget_name">Auto-Detect Widget</string>
+    <string name="widget_description">Widget cepat untuk mengaktifkan/menonaktifkan auto-detect game</string>
+    <string name="widget_status_on">AUTO-DETECT AKTIF</string>
+    <string name="widget_status_off">AUTO-DETECT MATI</string>
+    <string name="widget_tap_toggle">Tap untuk toggle</string>
+
+    <!-- Thermal Warning Dialog -->
+    <string name="thermal_headline_1">PERINGATAN</string>
+    <string name="thermal_headline_2">THERMAL!</string>
+    <string name="thermal_current_temp">SUHU SAAT INI</string>
+    <string name="thermal_body_text">Suhu HP melebihi batas aman!</string>
+    <string name="thermal_callout_text">Thermal protection dimatikan. Perangkat berisiko rusak permanen jika dilanjutkan.</string>
+    <string name="thermal_btn_deactivate">MATIKAN MODE</string>
+    <string name="thermal_btn_continue">LANJUTKAN</string>
+    <string name="thermal_footer">MODE DEWA SYSTEM OVERRIDE</string>
+    <string name="thermal_icon_desc">Ikon peringatan suhu</string>
+    <string name="thermal_temp_format">%1$.0f°C</string>
+    <string name="thermal_log_dismissed">Peringatan thermal diabaikan pada %1$.0f°C</string>
+    <string name="thermal_log_deactivated">Mode dinonaktifkan karena suhu %1$.0f°C</string>
+
+    <!-- General -->
+    <string name="btn_ok">OK</string>
+    <string name="btn_cancel">Batal</string>
+    <string name="btn_delete">Hapus</string>
+    <string name="btn_yes">Ya</string>
+    <string name="btn_no">Tidak</string>
+    <string name="shizuku_required">Fitur ini membutuhkan Shizuku</string>
+</resources>

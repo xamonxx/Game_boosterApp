@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hazard stripe bar (top/bottom of thermal dialog) -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#CCFF3D00"
+                android:centerColor="#00FF3D00"
+                android:endColor="#CCFF3D00"
+                android:angle="45" />
+            <size android:height="4dp" />
+        </shape>
+    </item>
+</layer-list>

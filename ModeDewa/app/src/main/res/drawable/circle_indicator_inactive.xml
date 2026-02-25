@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- circle_indicator_inactive.xml — Dot abu-abu untuk status nonaktif -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#FF666680" />
+    <size android:width="10dp" android:height="10dp" />
+    <stroke android:width="2dp" android:color="#FF0A0A0F" />
+</shape>

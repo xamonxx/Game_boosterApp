@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Collapsed overlay: inner circle background -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#E60A0A0F" />
+    <stroke
+        android:width="1.5dp"
+        android:color="#8000E5FF" />
+</shape>

@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Floating Monitor Overlay — HUD overlay panel during gaming sessions.
+     Compact, draggable, expand/collapse. Designed for low-end devices. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/overlay_root"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <!-- === COLLAPSED STATE: Mini circle with FPS only === -->
+    <FrameLayout
+        android:id="@+id/collapsed_view"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:visibility="gone">
+
+        <!-- Outer glow ring -->
+        <View
+            android:id="@+id/collapsed_ring"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_overlay_collapsed_ring" />
+
+        <!-- Inner circle with FPS -->
+        <LinearLayout
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_overlay_collapsed"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="2dp">
+
+            <TextView
+                android:id="@+id/collapsed_fps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:textColor="@color/neon_cyan"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="60" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FPS"
+                android:textColor="@color/text_tertiary"
+                android:textSize="7sp" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- === EXPANDED STATE: Full HUD panel === -->
+    <LinearLayout
+        android:id="@+id/expanded_view"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_overlay_expanded"
+        android:orientation="vertical"
+        android:padding="0dp"
+        android:visibility="visible">
+
+        <!-- Header bar: title + collapse/close buttons -->
+        <LinearLayout
+            android:id="@+id/overlay_header"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:background="@drawable/bg_overlay_header"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp">
+
+            <!-- Status indicator dot -->
+            <View
+                android:id="@+id/status_dot"
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:background="@drawable/circle_indicator_active" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:fontFamily="monospace"
+                android:text="@string/overlay_title"
+                android:textColor="@color/neon_cyan"
+                android:textSize="8sp"
+                android:textStyle="bold" />
+
+            <!-- Collapse button -->
+            <ImageView
+                android:id="@+id/btn_collapse"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@string/overlay_collapse"
+                android:padding="2dp"
+                android:scaleType="centerInside"
+                android:src="@android:drawable/arrow_up_float"
+                android:tint="@color/neon_cyan" />
+
+            <!-- Close button -->
+            <ImageView
+                android:id="@+id/btn_close"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="2dp"
+                android:contentDescription="@string/overlay_close"
+                android:padding="2dp"
+                android:scaleType="centerInside"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:tint="@color/status_danger" />
+        </LinearLayout>
+
+        <!-- Stats Grid: 2x2 layout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="8dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="4dp">
+
+            <!-- Row 1: FPS + Temp -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- FPS -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/card_fps"
+                        android:textColor="@color/text_tertiary"
+                        android:textSize="8sp" />
+
+                    <TextView
+                        android:id="@+id/stat_fps"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:textColor="@color/neon_green"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        tools:text="60" />
+                </LinearLayout>
+
+                <!-- Temperature -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/card_temp"
+                        android:textColor="@color/text_tertiary"
+                        android:textSize="8sp" />
+
+                    <TextView
+                        android:id="@+id/stat_temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:textColor="@color/neon_cyan"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        tools:text="38°C" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="4dp"
+                android:background="@color/hud_border_cyan" />
+
+            <!-- Row 2: RAM + Battery -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- RAM -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/card_ram"
+                        android:textColor="@color/text_tertiary"
+                        android:textSize="8sp" />
+
+                    <TextView
+                        android:id="@+id/stat_ram"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:textColor="@color/neon_cyan"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        tools:text="512MB" />
+                </LinearLayout>
+
+                <!-- Battery -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/card_battery"
+                        android:textColor="@color/text_tertiary"
+                        android:textSize="8sp" />
+
+                    <TextView
+                        android:id="@+id/stat_battery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:textColor="@color/neon_green"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        tools:text="85%" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Session Timer -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_overlay_footer"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingVertical="3dp"
+            android:paddingHorizontal="8dp">
+
+            <View
+                android:id="@+id/timer_dot"
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:background="@drawable/circle_indicator_active" />
+
+            <TextView
+                android:id="@+id/stat_session_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:fontFamily="monospace"
+                android:textColor="@color/text_secondary"
+                android:textSize="9sp"
+                tools:text="01:24:35" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Temp warning icon (hidden by default) -->
+            <ImageView
+                android:id="@+id/temp_warning_icon"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:contentDescription="@string/overlay_temp_warning"
+                android:src="@android:drawable/ic_dialog_alert"
+                android:tint="@color/status_warning"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

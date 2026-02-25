@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- widget_auto_detect.xml — Layout widget 1x1 home screen -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/containerWidget"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_widget_active"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <!-- Radar Icon -->
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@android:drawable/ic_menu_search"
+            android:tint="@color/neon_cyan"
+            android:contentDescription="Auto-Detect" />
+
+        <!-- Status Text -->
+        <TextView
+            android:id="@+id/textWidgetStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="monospace"
+            android:text="AKTIF"
+            android:textColor="@color/neon_green"
+            android:textSize="9sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1" />
+
+        <!-- Small open button -->
+        <TextView
+            android:id="@+id/btnWidgetOpen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="BUKA"
+            android:textColor="@color/text_tertiary"
+            android:textSize="7sp"
+            android:fontFamily="monospace"
+            android:padding="2dp" />
+    </LinearLayout>
+</FrameLayout>
